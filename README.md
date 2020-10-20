@@ -3,7 +3,15 @@
 Projeto dedicado ao estudo de Banco de Dados.
 
 Acabei salvando as informações em arquivos JSON.
+```
+Últimas atualizações:
+    - Permissão de acesso à internet
+    - Layout Conversor de Moedas
+    - Recarregar na página de Login
+    - Alteração na forma de armazenamento
+```
 
+```
 Páginas:
     - Cadastro
     - Log-in
@@ -13,6 +21,7 @@ Páginas:
     - Color Game
     - Conversor de Moedas
     - TO DOs list
+```
 
 ## Getting Started
 

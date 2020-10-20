@@ -1,15 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sql_treino/utils/functions.dart';
 import 'package:sql_treino/utils/storage.dart';
-
-void main() {
-  runApp(MaterialApp(
-    home: Home(),
-  ));
-}
 
 class Home extends StatefulWidget {
   @override
@@ -29,37 +20,26 @@ class _HomeState extends State<Home> {
   }
 
   void _start() async {
-    String email = (await RAM().readData())['logged'];
-    Map data = await _readData();
-    if (data[email] == null) {
-      data[email] = [];
-    }
+    List data = await _readData();
     setState(() {
-      _toDoList = data[email];
+      _toDoList = data;
     });
   }
 
-  Future<File> _getFile() async {
-    final directory = await getApplicationDocumentsDirectory();
-    return File("${directory.path}/todos.json");
-  }
-
-  Future<File> _saveData() async {
-    final file = await _getFile();
-    Map prev = await _readData();
+  Future _saveData() async {
     String email = (await RAM().readData())["logged"];
-    prev[email] = _toDoList;
-    return file.writeAsString(json.encode(prev));
+    Map user = await Database().show(email);
+    user["data"]["todos"] = _toDoList;
+    await Database().edit(user);
   }
 
-  Future<Map> _readData() async {
+  Future<List> _readData() async {
     try {
-      final file = await _getFile();
-      String read = await file.readAsString();
-      print(read);
-      return json.decode(read);
+      String email = (await RAM().readData())["logged"];
+      List todos = (await Database().show(email))['data']["todos"];
+      return todos == null ? [] : todos;
     } catch (err) {
-      return Map();
+      return List();
     }
   }
 
@@ -67,17 +47,17 @@ class _HomeState extends State<Home> {
     if (textController.text == "") {
       return;
     }
+    Map<String, dynamic> newToDo = Map();
+    newToDo['title'] = textController.text;
+    newToDo['ok'] = false;
     setState(() {
-      Map<String, dynamic> newToDo = Map();
-      newToDo['title'] = textController.text;
-      newToDo['ok'] = false;
       textController.text = "";
       _toDoList.add(newToDo);
-      _saveData();
     });
+    _saveData();
   }
 
-  Future<Null> _sortToDo() async {
+  Future _sortToDo() async {
     await Future.delayed(Duration(milliseconds: 500));
     setState(() {
       _toDoList.sort((a, b) => a['ok'] ? 1 : -1);

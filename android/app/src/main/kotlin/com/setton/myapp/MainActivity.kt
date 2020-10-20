@@ -1,4 +1,4 @@
-package com.example.sql_treino
+package com.setton.myapp
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:sql_treino/utils/functions.dart';
-
-void main() {
-  runApp(MaterialApp(
-    home: Home(),
-  ));
-}
+import 'package:sql_treino/utils/storage.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -86,7 +81,7 @@ class _HomeState extends State<Home> {
       timer.cancel();
     } catch (err) {}
 
-    void periodic(time) {
+    void periodic(time) async {
       if (barHeight >= 1) {
         setState(() {
           barHeight -= 1;
@@ -99,6 +94,12 @@ class _HomeState extends State<Home> {
           text = "Pressione Restart";
           color = Colors.grey;
         });
+        String email = (await RAM().readData())['logged'];
+        Map user = await Database().show(email);
+        if (results > user["data"]["colorgamepts"]) {
+          user["data"]["colorgamepts"] = results;
+          await Database().edit(user);
+        }
       }
     }
 

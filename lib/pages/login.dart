@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' as Foundation;
 
 import 'package:sql_treino/utils/functions.dart';
 import 'package:sql_treino/utils/storage.dart';
@@ -54,7 +55,7 @@ class _LoginState extends State<Login> {
   }
 
   Future tryLogin() async {
-    List data = await Users().readData();
+    List data = await Database().list();
     List objects = data.where((el) => el['email'] == _email.text).toList();
 
     if (objects.length == 0) {
@@ -69,8 +70,7 @@ class _LoginState extends State<Login> {
       Map object = objects[0];
       if (_password.text == Cryptography.decrypt(object['password'])) {
         // 200 OK
-        RAM ram = RAM();
-        await ram.editData("logged", _email.text);
+        await RAM().editData("logged", _email.text);
         route(context, "/userpage");
       } else {
         // 400 Bad Request
@@ -88,6 +88,9 @@ class _LoginState extends State<Login> {
     return Container(
       child: RaisedButton(
         onPressed: () async {
+          if (Foundation.kDebugMode) {
+            print(await Database().list());
+          }
           if (_formKey.currentState.validate()) {
             await tryLogin();
           }

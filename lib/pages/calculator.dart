@@ -5,12 +5,6 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:sql_treino/utils/functions.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: Home(),
-  ));
-}
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();

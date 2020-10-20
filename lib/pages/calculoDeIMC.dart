@@ -2,12 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sql_treino/utils/functions.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: Home(),
-  ));
-}
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();

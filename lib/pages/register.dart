@@ -79,8 +79,9 @@ class _RegisterState extends State<Register> {
         "email": _email.text.trim(),
         "password": _password.text,
         "birthday": "${_birthday.day}/${_birthday.month}/${_birthday.year}",
+        "data": {"todos": List(), "colorgamepts": 0},
       };
-      String erro = await Users().addData(data);
+      String erro = await Database().create(data);
       if (erro == "senha") {
         alert(context, "Senha inválida",
             "A sua senha contém um caractere inválido.\nOs caracteres válidos são:\na-z A-Z 0-9 .()!@#\$%&");

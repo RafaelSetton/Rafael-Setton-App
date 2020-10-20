@@ -8,22 +8,6 @@ import 'package:sql_treino/utils/functions.dart';
 
 const request = "https://economia.awesomeapi.com.br/json/all";
 
-void main() async {
-  runApp(MaterialApp(
-    theme: ThemeData(
-        hintColor: Colors.amber,
-        primaryColor: Colors.white,
-        inputDecorationTheme: InputDecorationTheme(
-          enabledBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-          focusedBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
-          hintStyle: TextStyle(color: Colors.amber),
-        )),
-    home: Home(),
-  ));
-}
-
 Future<Map> getData() async {
   http.Response response = await http.get(request);
   return json.decode(response.body);
@@ -129,17 +113,29 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("\$ Conversor de Moedas \$"),
-        backgroundColor: Colors.amber,
-        leading: backToUserPageLeading(context),
-      ),
-      body: FutureBuilder(
-        future: getData(),
-        builder: bodyBuilder,
+    return MaterialApp(
+      theme: ThemeData(
+          hintColor: Colors.amber,
+          primaryColor: Colors.white,
+          inputDecorationTheme: InputDecorationTheme(
+            enabledBorder:
+                OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+            focusedBorder:
+                OutlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+            hintStyle: TextStyle(color: Colors.amber),
+          )),
+      home: Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("\$ Conversor de Moedas \$"),
+          backgroundColor: Colors.amber,
+          leading: backToUserPageLeading(context),
+        ),
+        body: FutureBuilder(
+          future: getData(),
+          builder: bodyBuilder,
+        ),
       ),
     );
   }
