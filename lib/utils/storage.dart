@@ -60,7 +60,7 @@ class Database {
   }
 
   Future edit(Map data) async {
-    String id = await idFromEmail(data['email']);
+    String id = await _idFromEmail(data['email']);
 
     http.patch(_baseUrl + "users/$id.json", body: jsonEncode(data));
   }
@@ -92,12 +92,12 @@ class Database {
   }
 
   Future delete(String email) async {
-    final key = idFromEmail(email);
+    final key = _idFromEmail(email);
 
     http.delete(_baseUrl + "users/$key.json");
   }
 
-  Future<String> idFromEmail(String email) async {
+  Future<String> _idFromEmail(String email) async {
     final response = await http.get(_baseUrl + "users.json");
 
     String key;
