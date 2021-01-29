@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 void route(BuildContext context, String route) {
@@ -53,18 +54,20 @@ class Scheme {
 class Cryptography {
   static String encrypt(String from) {
     String _new = '';
+    int displace = Random().nextInt(70);
     for (int i = 0; i < from.length; i++) {
-      _new +=
-          asciiChars[(asciiChars.indexOf(from[i]) + 10) % asciiChars.length];
+      _new += asciiChars[
+          (asciiChars.indexOf(from[i]) + displace) % asciiChars.length];
     }
-    return _new;
+    return displace.toStringAsPrecision(2) + _new;
   }
 
   static String decrypt(String from) {
     String _new = '';
-    for (int i = 0; i < from.length; i++) {
-      _new +=
-          asciiChars[(asciiChars.indexOf(from[i]) - 10) % asciiChars.length];
+    int displace = int.parse(from.substring(0, 2));
+    for (int i = 2; i < from.length; i++) {
+      _new += asciiChars[
+          (asciiChars.indexOf(from[i]) - displace) % asciiChars.length];
     }
     return _new;
   }
