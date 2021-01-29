@@ -113,28 +113,31 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-          hintColor: Colors.amber,
-          primaryColor: Colors.white,
-          inputDecorationTheme: InputDecorationTheme(
-            enabledBorder:
-                OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            focusedBorder:
-                OutlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
-            hintStyle: TextStyle(color: Colors.amber),
-          )),
-      home: Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("\$ Conversor de Moedas \$"),
-          backgroundColor: Colors.amber,
-          leading: backToUserPageLeading(context),
-        ),
-        body: FutureBuilder(
-          future: getData(),
-          builder: bodyBuilder,
+    return popScope(
+      context,
+      MaterialApp(
+        theme: ThemeData(
+            hintColor: Colors.amber,
+            primaryColor: Colors.white,
+            inputDecorationTheme: InputDecorationTheme(
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white)),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.amber)),
+              hintStyle: TextStyle(color: Colors.amber),
+            )),
+        home: Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text("\$ Conversor de Moedas \$"),
+            backgroundColor: Colors.amber,
+            leading: backToUserPageLeading(context),
+          ),
+          body: FutureBuilder(
+            future: getData(),
+            builder: bodyBuilder,
+          ),
         ),
       ),
     );

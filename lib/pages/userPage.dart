@@ -36,25 +36,27 @@ class _UserPageState extends State<UserPage> {
           return Container(
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
-            child: Column(
-              children: <Widget>[
-                Text(
-                  "Você está logado com o seguinte email:\n'${snapshot.data}'",
-                  style: TextStyle(
-                    fontSize: 20,
-                    height: 2,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    "Você está logado com o seguinte email:\n'${snapshot.data}'",
+                    style: TextStyle(
+                      fontSize: 20,
+                      height: 2,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                button("Calculadora", Colors.green, Colors.lightBlue[100],
-                    "calculator"),
-                button("Cálculo de IMC", Colors.grey[50], Colors.green,
-                    "calculodeimc"),
-                button("Color Game", Colors.purple, Colors.grey, "colorgame"),
-                button("Conversor de Moedas", Colors.black, Colors.amberAccent,
-                    "conversordemoedas"),
-                button("Todo List", Colors.grey[50], Colors.blue, "todolist"),
-              ],
+                  button("Calculadora", Colors.green, Colors.lightBlue[100],
+                      "calculator"),
+                  button("Cálculo de IMC", Colors.grey[50], Colors.green,
+                      "calculodeimc"),
+                  button("Color Game", Colors.purple, Colors.grey, "colorgame"),
+                  button("Conversor de Moedas", Colors.black,
+                      Colors.amberAccent, "conversordemoedas"),
+                  button("Todo List", Colors.grey[50], Colors.blue, "todolist"),
+                ],
+              ),
             ),
           );
         }
@@ -84,23 +86,26 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: Text("Página do Usuário"),
-        centerTitle: true,
-        leading: FlatButton(
-            onPressed: logout,
-            child: Text(
-              "Log Out",
-              style: TextStyle(
-                color: Colors.red[400],
-              ),
-            )),
-      ),
-      body: FutureBuilder(
-        future: validate(),
-        builder: buildBody,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: Colors.grey[100],
+        appBar: AppBar(
+          title: Text("Página do Usuário"),
+          centerTitle: true,
+          leading: FlatButton(
+              onPressed: logout,
+              child: Text(
+                "Log Out",
+                style: TextStyle(
+                  color: Colors.red[400],
+                ),
+              )),
+        ),
+        body: FutureBuilder(
+          future: validate(),
+          builder: buildBody,
+        ),
       ),
     );
   }

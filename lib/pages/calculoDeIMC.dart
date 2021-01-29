@@ -48,7 +48,9 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return popScope(
+      context,
+      Scaffold(
         appBar: AppBar(
           title: Text("Calculadora de IMC"),
           centerTitle: true,
@@ -130,6 +132,8 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

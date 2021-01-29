@@ -66,17 +66,15 @@ class Database {
   }
 
   Future<List<Map>> list() async {
+    // {birthday: str, data: {colorgamepts: int, todos: [{ok: bool, title: str}]}, email: str, name: str, password: str}
     final response = await http.get(_baseUrl + "users.json");
 
-    final map = jsonDecode(response.body);
+    final Map map = jsonDecode(response.body);
     if (map == null) {
       return [];
     }
 
-    List list = <Map>[];
-    map.forEach((k, v) {
-      list.add(v);
-    });
+    List<Map> list = map.values.cast<Map>().toList();
     return list;
   }
 

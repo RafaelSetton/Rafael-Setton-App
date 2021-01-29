@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:sql_treino/utils/functions.dart';
 import 'package:sql_treino/utils/storage.dart';
 
@@ -117,48 +118,51 @@ class _HomeState extends State<Home> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Lista de Tarefas"),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
-        leading: backToUserPageLeading(context),
-      ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.all(10),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: textController,
-                    decoration: InputDecoration(
-                      labelText: "Nova tarefa",
-                      labelStyle: TextStyle(color: Colors.blue),
+    return popScope(
+      context,
+      Scaffold(
+        appBar: AppBar(
+          title: Text("Lista de Tarefas"),
+          centerTitle: true,
+          backgroundColor: Colors.blue,
+          leading: backToUserPageLeading(context),
+        ),
+        body: Column(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      controller: textController,
+                      decoration: InputDecoration(
+                        labelText: "Nova tarefa",
+                        labelStyle: TextStyle(color: Colors.blue),
+                      ),
                     ),
                   ),
-                ),
-                RaisedButton(
-                  color: Colors.blue,
-                  child: Text("ADD"),
-                  textColor: Colors.white,
-                  onPressed: _addToDo,
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: RefreshIndicator(
-              child: ListView.builder(
-                padding: EdgeInsets.only(top: 10),
-                itemCount: _toDoList.length,
-                itemBuilder: listItem,
+                  RaisedButton(
+                    color: Colors.blue,
+                    child: Text("ADD"),
+                    textColor: Colors.white,
+                    onPressed: _addToDo,
+                  ),
+                ],
               ),
-              onRefresh: _sortToDo,
             ),
-          ),
-        ],
+            Expanded(
+              child: RefreshIndicator(
+                child: ListView.builder(
+                  padding: EdgeInsets.only(top: 10),
+                  itemCount: _toDoList.length,
+                  itemBuilder: listItem,
+                ),
+                onRefresh: _sortToDo,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

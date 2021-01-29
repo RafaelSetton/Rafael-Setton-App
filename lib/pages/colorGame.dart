@@ -108,108 +108,111 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Color Game"),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            try {
-              timer.cancel();
-            } catch (err) {}
-            route(context, "/userpage");
-          },
+    return popScope(
+      context,
+      Scaffold(
+        appBar: AppBar(
+          title: Text("Color Game"),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              try {
+                timer.cancel();
+              } catch (err) {}
+              route(context, "/userpage");
+            },
+          ),
         ),
-      ),
-      body: Container(
-        color: Colors.black,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            AnimatedContainer(
-              duration: Duration(milliseconds: 5),
-              alignment: Alignment.bottomCenter,
-              height: barHeight,
-              width: 30,
-              color: Colors.grey,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  width: MediaQuery.of(context).size.width - 30,
-                  height: MediaQuery.of(context).size.height / 3,
-                  padding: EdgeInsets.all(10.0),
-                  alignment: Alignment.center,
-                  //alignment: AlignmentGeometry,
-                  child: Text(
-                    text,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: TextStyle(
-                        fontSize: 50,
-                        color: color,
-                        fontStyle: FontStyle.normal),
+        body: Container(
+          color: Colors.black,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              AnimatedContainer(
+                duration: Duration(milliseconds: 5),
+                alignment: Alignment.bottomCenter,
+                height: barHeight,
+                width: 30,
+                color: Colors.grey,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    width: MediaQuery.of(context).size.width - 30,
+                    height: MediaQuery.of(context).size.height / 3,
+                    padding: EdgeInsets.all(10.0),
+                    alignment: Alignment.center,
+                    //alignment: AlignmentGeometry,
+                    child: Text(
+                      text,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      style: TextStyle(
+                          fontSize: 50,
+                          color: color,
+                          fontStyle: FontStyle.normal),
+                    ),
                   ),
-                ),
-                Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Container(
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                results.toString() + ' pts',
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 35),
+                              ),
+                              width: MediaQuery.of(context).size.width / 3 - 10,
+                              color: Colors.black),
+                          colorButton(Colors.red),
+                          colorButton(Colors.orange),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          colorButton(Colors.purple),
+                          colorButton(Colors.white),
+                          colorButton(Colors.yellow),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          colorButton(Colors.blue),
+                          colorButton(Colors.green),
+                          Container(
                             alignment: Alignment.center,
-                            child: Text(
-                              results.toString() + ' pts',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 35),
-                            ),
                             width: MediaQuery.of(context).size.width / 3 - 10,
-                            color: Colors.black),
-                        colorButton(Colors.red),
-                        colorButton(Colors.orange),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        colorButton(Colors.purple),
-                        colorButton(Colors.white),
-                        colorButton(Colors.yellow),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        colorButton(Colors.blue),
-                        colorButton(Colors.green),
-                        Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width / 3 - 10,
-                          child: IconButton(
-                            alignment: Alignment.center,
-                            icon: Icon(
-                              Icons.restore,
-                              color: Colors.grey,
+                            child: IconButton(
+                              alignment: Alignment.center,
+                              icon: Icon(
+                                Icons.restore,
+                                color: Colors.grey,
+                              ),
+                              iconSize: 50,
+                              onPressed: () {
+                                startTimer(MediaQuery.of(context).size.height);
+                                newText();
+                                setState(() {
+                                  results = 0;
+                                });
+                              },
                             ),
-                            iconSize: 50,
-                            onPressed: () {
-                              startTimer(MediaQuery.of(context).size.height);
-                              newText();
-                              setState(() {
-                                results = 0;
-                              });
-                            },
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

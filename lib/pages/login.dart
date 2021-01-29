@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' as Foundation;
+import 'package:flutter/services.dart';
 
 import 'package:sql_treino/utils/functions.dart';
 import 'package:sql_treino/utils/storage.dart';
@@ -13,6 +15,18 @@ class _LoginState extends State<Login> {
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
+    if (Foundation.kDebugMode) {
+      // Database Updates, etc.
+    }
+  }
 
   Widget input(TextEditingController controller, String label, String hint,
       {bool hide = false}) {
@@ -55,10 +69,9 @@ class _LoginState extends State<Login> {
   }
 
   Future tryLogin() async {
-    List data = await Database().list();
-    List objects = data.where((el) => el['email'] == _email.text).toList();
+    Map user = await Database().show(_email.text);
 
-    if (objects.length == 0) {
+    if (user == null) {
       // 404 Not Found
       alert(
         context,
@@ -67,8 +80,7 @@ class _LoginState extends State<Login> {
       );
       _password.text = "";
     } else {
-      Map object = objects[0];
-      if (_password.text == Cryptography.decrypt(object['password'])) {
+      if (_password.text == Cryptography.decrypt(user['password'])) {
         // 200 OK
         await RAM().editData("logged", _email.text);
         route(context, "/userpage");
@@ -88,9 +100,6 @@ class _LoginState extends State<Login> {
     return Container(
       child: RaisedButton(
         onPressed: () async {
-          if (Foundation.kDebugMode) {
-            print(await Database().list());
-          }
           if (_formKey.currentState.validate()) {
             await tryLogin();
           }

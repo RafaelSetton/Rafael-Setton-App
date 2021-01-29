@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 
@@ -5,6 +6,18 @@ void route(BuildContext context, String route) {
   Navigator.pop(context);
   Navigator.pushNamed(context, Navigator.defaultRouteName);
   Navigator.pushNamed(context, route);
+}
+
+WillPopScope popScope(BuildContext context, Widget child) {
+  return WillPopScope(
+    onWillPop: () async {
+      Timer(Duration(milliseconds: 100), () {
+        route(context, '/userpage');
+      });
+      return false;
+    },
+    child: child,
+  );
 }
 
 Future<void> alert(BuildContext context, String title, String text,
