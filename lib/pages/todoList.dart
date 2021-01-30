@@ -28,15 +28,17 @@ class _HomeState extends State<Home> {
   }
 
   Future _saveData() async {
-    String email = (await RAM().readData())["logged"];
+    RAM ram = await RAM().load();
+    String email = (await ram.readData())["logged"];
     Map user = await Database().show(email);
     user["data"]["todos"] = _toDoList;
-    await Database().edit(user);
+    await Database().post(user);
   }
 
   Future<List> _readData() async {
     try {
-      String email = (await RAM().readData())["logged"];
+      RAM ram = await RAM().load();
+      String email = (await ram.readData())["logged"];
       List todos = (await Database().show(email))['data']["todos"];
       return todos == null ? [] : todos;
     } catch (err) {

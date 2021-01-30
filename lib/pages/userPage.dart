@@ -10,7 +10,8 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   Future validate() async {
-    Map data = await RAM().readData();
+    RAM ram = await RAM().load();
+    Map data = await ram.readData();
     return data["logged"];
   }
 
@@ -64,7 +65,8 @@ class _UserPageState extends State<UserPage> {
   }
 
   void logout() async {
-    await RAM().editData("logged", null);
+    RAM ram = await RAM().load();
+    await ram.editData("logged", null);
     route(context, "/");
   }
 

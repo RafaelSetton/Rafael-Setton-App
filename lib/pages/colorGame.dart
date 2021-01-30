@@ -94,11 +94,12 @@ class _HomeState extends State<Home> {
           text = "Pressione Restart";
           color = Colors.grey;
         });
-        String email = (await RAM().readData())['logged'];
+        RAM ram = await RAM().load();
+        String email = (await ram.readData())['logged'];
         Map user = await Database().show(email);
         if (results > user["data"]["colorgamepts"]) {
           user["data"]["colorgamepts"] = results;
-          await Database().edit(user);
+          await Database().post(user);
         }
       }
     }

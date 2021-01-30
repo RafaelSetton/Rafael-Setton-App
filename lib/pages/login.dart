@@ -82,7 +82,8 @@ class _LoginState extends State<Login> {
     } else {
       if (_password.text == Cryptography.decrypt(user['password'])) {
         // 200 OK
-        await RAM().editData("logged", _email.text);
+        RAM ram = await RAM().load();
+        ram.editData("logged", _email.text);
         route(context, "/userpage");
       } else {
         // 400 Bad Request
@@ -148,7 +149,8 @@ class _LoginState extends State<Login> {
         leading: IconButton(
           icon: Icon(Icons.person),
           onPressed: () async {
-            if ((await RAM().readData())['logged'] != null) {
+            RAM ram = await RAM().load();
+            if ((await ram.readData())['logged'] != null) {
               route(context, "/userpage");
             }
           },

@@ -26,6 +26,12 @@ dependencies:
   path_provider: ^1.6.27
   http: ^0.12.2
   circular_countdown_timer: ^0.0.9
+  flutter_reorderable_list: ^0.1.5
+  cloud_firestore: ^0.13.0+1
+  image_picker: ^0.6.2+3
+  google_sign_in: ^4.1.1
+  firebase_storage: ^3.1.1
+  firebase_auth: ^0.15.3
 
 dev_dependencies:
   flutter_test:
