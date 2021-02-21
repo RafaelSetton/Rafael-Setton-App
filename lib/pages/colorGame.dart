@@ -96,10 +96,10 @@ class _HomeState extends State<Home> {
         });
         RAM ram = await RAM().load();
         String email = (await ram.readData())['logged'];
-        Map user = await Database().show(email);
+        Map user = await UserDB().show(email);
         if (results > user["data"]["colorgamepts"]) {
           user["data"]["colorgamepts"] = results;
-          await Database().post(user);
+          await UserDB().post(user);
         }
       }
     }

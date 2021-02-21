@@ -61,7 +61,7 @@ class _HomeState extends State<Home> {
               onPressed: _resetFields,
             )
           ],
-          leading: backToUserPageLeading(context),
+          leading: backToPageLeading(context),
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(

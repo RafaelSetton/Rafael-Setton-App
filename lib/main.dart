@@ -9,6 +9,7 @@ import 'package:sql_treino/pages/calculoDeIMC.dart' as calculodeIMC;
 import 'package:sql_treino/pages/colorGame.dart' as colorGame;
 import 'package:sql_treino/pages/conversorDeMoedas.dart' as conversorDeMoedas;
 import 'package:sql_treino/pages/todoList.dart' as todoList;
+import 'package:sql_treino/pages/workoutTimer.dart' as workoutTimer;
 
 import 'package:sql_treino/utils/functions.dart';
 
@@ -23,5 +24,8 @@ void main() => runApp(MaterialApp(
         "/colorgame": (context) => colorGame.Home(),
         "/conversordemoedas": (context) => conversorDeMoedas.Home(),
         "/todolist": (context) => todoList.Home(),
+        "/workouttimer-run": (context) => workoutTimer.Run(),
+        "/workouttimer-saved": (context) => workoutTimer.Saved(),
+        "/workouttimer-edit": (context) => workoutTimer.Edit(),
       },
     ));

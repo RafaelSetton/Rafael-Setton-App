@@ -1,23 +1,28 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:sql_treino/utils/storage.dart';
 
 void route(BuildContext context, String route) {
-  Navigator.pop(context);
-  Navigator.pushNamed(context, Navigator.defaultRouteName);
-  Navigator.pushNamed(context, route);
+  Navigator.popAndPushNamed(context, route);
 }
 
-WillPopScope popScope(BuildContext context, Widget child) {
+WillPopScope popScope(BuildContext context, Widget child,
+    [String target = "/userpage"]) {
   return WillPopScope(
     onWillPop: () async {
       Timer(Duration(milliseconds: 100), () {
-        route(context, '/userpage');
+        route(context, target);
       });
       return false;
     },
     child: child,
   );
+}
+
+Future<String> getUserEmail() async {
+  RAM ram = await RAM().load();
+  return (await ram.readData())['logged'];
 }
 
 Future<void> alert(BuildContext context, String title, String text,
@@ -50,11 +55,11 @@ Future<void> alert(BuildContext context, String title, String text,
   );
 }
 
-Widget backToUserPageLeading(BuildContext context,
-    {IconData icon: Icons.arrow_back}) {
+Widget backToPageLeading(BuildContext context,
+    {IconData icon: Icons.arrow_back, String target: "/userpage"}) {
   return IconButton(
     icon: Icon(icon),
-    onPressed: () => route(context, "/userpage"),
+    onPressed: () => route(context, target),
   );
 }
 

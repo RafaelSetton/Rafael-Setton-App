@@ -56,6 +56,8 @@ class _UserPageState extends State<UserPage> {
                   button("Conversor de Moedas", Colors.black,
                       Colors.amberAccent, "conversordemoedas"),
                   button("Todo List", Colors.grey[50], Colors.blue, "todolist"),
+                  button("Workout Timer", Colors.purple[50], Colors.red,
+                      "workouttimer-edit"),
                 ],
               ),
             ),

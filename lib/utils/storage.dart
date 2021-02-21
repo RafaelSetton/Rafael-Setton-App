@@ -16,23 +16,21 @@ class RAM {
     if (!(await file.exists())) {
       await file.create();
     }
-    if ((await file.readAsString()) == "") {
-      await file.writeAsString(jsonEncode(Map()));
-    }
+
     return this;
   }
 
   Future<Map> readData() async {
     String dataString = await file.readAsString();
 
-    return jsonDecode(dataString);
+    return dataString.isNotEmpty ? jsonDecode(dataString) : Map();
   }
 
   Future editData(String id, dynamic data) async {
     final previous = await readData();
     previous[id] = data;
     String dataString = jsonEncode(previous);
-    file.writeAsString(dataString);
+    await file.writeAsString(dataString);
   }
 
   Future deleteData(id) async {
@@ -42,7 +40,7 @@ class RAM {
   }
 }
 
-class Database {
+class UserDB {
   Future post(Map data, {bool create = false}) async {
     if (data['password'].contains(RegExp(r"[^a-zA-Z0-9 .()!@#$%&]"))) {
       return "senha";
@@ -68,10 +66,59 @@ class Database {
 
   Future<Map> show(String email) async {
     final all = await list();
-    return all.where((user) => user['email'] == email).first;
+    final valids = all.where((user) => user['email'] == email);
+    return valids.length > 0 ? valids.first : null;
   }
 
   Future delete(String email) async {
     Firestore.instance.collection("users").document(email).delete();
+  }
+}
+
+class WorkoutDB {
+  Future post(String userEmail, String name, List<List> data) async {
+    // data: [["name", "value"], ["name", "value"]]
+    await Firestore.instance
+        .collection("users")
+        .document(userEmail)
+        .collection("workouts")
+        .document(name)
+        .setData(<String, List>{
+      "items": data
+          .map((e) => <String, int>{e[0]: int.parse(e[1])})
+          .toList() // [{"name": "value"}, {"name": "value"}]
+    });
+  }
+
+  Future<List<String>> list(String userEmail) async {
+    // ["name1", "name2", "name3"]
+
+    final response = await Firestore.instance
+        .collection("users")
+        .document(userEmail)
+        .collection("workouts")
+        .getDocuments();
+
+    return response.documents.map((e) => e.documentID).toList();
+  }
+
+  Future<List<Map>> show(String userEmail, String name) async {
+    // [["name", "value"], ["name", "value"]]
+    final response = await Firestore.instance
+        .collection("users")
+        .document(userEmail)
+        .collection("workouts")
+        .document(name)
+        .get();
+    return response.data["items"].cast<Map<String, dynamic>>();
+  }
+
+  Future delete(String userEmail, String name) async {
+    Firestore.instance
+        .collection("users")
+        .document(userEmail)
+        .collection("workouts")
+        .document(name)
+        .delete();
   }
 }

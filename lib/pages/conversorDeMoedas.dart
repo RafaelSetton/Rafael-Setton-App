@@ -132,7 +132,7 @@ class _HomeState extends State<Home> {
             centerTitle: true,
             title: Text("\$ Conversor de Moedas \$"),
             backgroundColor: Colors.amber,
-            leading: backToUserPageLeading(context),
+            leading: backToPageLeading(context),
           ),
           body: FutureBuilder(
             future: getData(),

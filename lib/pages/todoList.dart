@@ -30,16 +30,16 @@ class _HomeState extends State<Home> {
   Future _saveData() async {
     RAM ram = await RAM().load();
     String email = (await ram.readData())["logged"];
-    Map user = await Database().show(email);
+    Map user = await UserDB().show(email);
     user["data"]["todos"] = _toDoList;
-    await Database().post(user);
+    await UserDB().post(user);
   }
 
   Future<List> _readData() async {
     try {
       RAM ram = await RAM().load();
       String email = (await ram.readData())["logged"];
-      List todos = (await Database().show(email))['data']["todos"];
+      List todos = (await UserDB().show(email))['data']["todos"];
       return todos == null ? [] : todos;
     } catch (err) {
       return List();
@@ -127,7 +127,7 @@ class _HomeState extends State<Home> {
           title: Text("Lista de Tarefas"),
           centerTitle: true,
           backgroundColor: Colors.blue,
-          leading: backToUserPageLeading(context),
+          leading: backToPageLeading(context),
         ),
         body: Column(
           children: <Widget>[

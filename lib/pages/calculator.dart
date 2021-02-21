@@ -269,7 +269,7 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           title: Text("Calculadora"),
           centerTitle: true,
-          leading: backToUserPageLeading(context),
+          leading: backToPageLeading(context),
         ),
         body: Column(
           children: <Widget>[

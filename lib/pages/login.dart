@@ -26,6 +26,14 @@ class _LoginState extends State<Login> {
     if (Foundation.kDebugMode) {
       // Database Updates, etc.
     }
+
+    Timer(Duration(milliseconds: 10), () async {
+      RAM ram = await RAM().load();
+      Map data = await ram.readData();
+      if (data['logged'] != null) {
+        Navigator.pushNamed(context, "/userpage");
+      }
+    });
   }
 
   Widget input(TextEditingController controller, String label, String hint,
@@ -69,7 +77,7 @@ class _LoginState extends State<Login> {
   }
 
   Future tryLogin() async {
-    Map user = await Database().show(_email.text);
+    Map user = await UserDB().show(_email.text);
 
     if (user == null) {
       // 404 Not Found
