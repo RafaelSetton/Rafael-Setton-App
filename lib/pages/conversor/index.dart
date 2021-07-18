@@ -4,27 +4,20 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:sql_treino/utils/functions.dart';
-
-const request = "https://economia.awesomeapi.com.br/json/all";
-
-Future<Map> getData() async {
-  http.Response response = await http.get(request);
-  return json.decode(response.body);
-}
-
-class Home extends StatefulWidget {
+class ConversorPage extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _ConversorPageState createState() => _ConversorPageState();
 }
 
-class _HomeState extends State<Home> {
+class _ConversorPageState extends State<ConversorPage> {
   TextEditingController reaisController = TextEditingController();
   TextEditingController dolaresController = TextEditingController();
   TextEditingController eurosController = TextEditingController();
 
   double dolar;
   double euro;
+
+  static const request = "https://economia.awesomeapi.com.br/json/all";
 
   void _realChange(String text) {
     if (text == "") {
@@ -111,57 +104,59 @@ class _HomeState extends State<Home> {
     }
   }
 
+  Future<Map> getData() async {
+    http.Response response = await http.get(request);
+    return json.decode(response.body);
+  }
+
+  TextField buildTextField(String label, String prefix,
+      TextEditingController controller, Function onChange) {
+    return TextField(
+      onChanged: onChange,
+      controller: controller,
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
+      decoration: InputDecoration(
+        hintText: "0,00",
+        labelText: label,
+        labelStyle: TextStyle(
+          color: Colors.amber,
+          fontSize: 15,
+        ),
+        prefixText: prefix,
+      ),
+      style: TextStyle(
+        color: Colors.amber,
+        fontSize: 18,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return popScope(
-      context,
-      MaterialApp(
-        theme: ThemeData(
-            hintColor: Colors.amber,
-            primaryColor: Colors.white,
-            inputDecorationTheme: InputDecorationTheme(
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white)),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.amber)),
-              hintStyle: TextStyle(color: Colors.amber),
-            )),
-        home: Scaffold(
-          backgroundColor: Colors.black,
-          appBar: AppBar(
-            centerTitle: true,
-            title: Text("\$ Conversor de Moedas \$"),
-            backgroundColor: Colors.amber,
-            leading: backToPageLeading(context),
-          ),
-          body: FutureBuilder(
-            future: getData(),
-            builder: bodyBuilder,
-          ),
+    return MaterialApp(
+      theme: ThemeData(
+          hintColor: Colors.amber,
+          primaryColor: Colors.white,
+          inputDecorationTheme: InputDecorationTheme(
+            enabledBorder:
+                OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+            focusedBorder:
+                OutlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+            hintStyle: TextStyle(color: Colors.amber),
+          )),
+      home: Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("\$ Conversor de Moedas \$"),
+          backgroundColor: Colors.amber,
+          leading: BackButton(),
+        ),
+        body: FutureBuilder(
+          future: getData(),
+          builder: bodyBuilder,
         ),
       ),
     );
   }
-}
-
-TextField buildTextField(String label, String prefix,
-    TextEditingController controller, Function onChange) {
-  return TextField(
-    onChanged: onChange,
-    controller: controller,
-    keyboardType: TextInputType.numberWithOptions(decimal: true),
-    decoration: InputDecoration(
-      hintText: "0,00",
-      labelText: label,
-      labelStyle: TextStyle(
-        color: Colors.amber,
-        fontSize: 15,
-      ),
-      prefixText: prefix,
-    ),
-    style: TextStyle(
-      color: Colors.amber,
-      fontSize: 18,
-    ),
-  );
 }

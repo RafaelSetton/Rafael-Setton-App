@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
-import 'package:sql_treino/utils/functions.dart';
 
-class Home extends StatefulWidget {
+class CalculadoraPage extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _CalculadoraPageState createState() => _CalculadoraPageState();
 }
 
-class _HomeState extends State<Home> {
+class _CalculadoraPageState extends State<CalculadoraPage> {
   String calculus = "";
   int maxScreenLength = 24;
   String varA, varB, varC, varD;
@@ -266,100 +265,97 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return popScope(
-      context,
-      Scaffold(
-        appBar: AppBar(
-          title: Text("Calculadora"),
-          centerTitle: true,
-          leading: backToPageLeading(context),
-        ),
-        body: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height / 5.75,
-              padding: EdgeInsets.all(10.0),
-              alignment: Alignment.center,
-              color: Colors.black,
-              child: Text(
-                calculus,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                style: TextStyle(
-                    fontSize: 50,
-                    color: Colors.white,
-                    fontStyle: FontStyle.normal),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Calculadora"),
+        centerTitle: true,
+        leading: BackButton(),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height / 5.75,
+            padding: EdgeInsets.all(10.0),
+            alignment: Alignment.center,
+            color: Colors.black,
+            child: Text(
+              calculus,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              style: TextStyle(
+                  fontSize: 50,
+                  color: Colors.white,
+                  fontStyle: FontStyle.normal),
             ),
-            Row(
-              children: <Widget>[
-                myContainer(text: "CE", bg: Colors.orange, callback: clear),
-                myContainer(text: "⌫", bg: Colors.green, callback: delete),
-                myContainer(text: " ( ", bg: Colors.lightBlueAccent),
-                myContainer(text: " ) ", bg: Colors.lightBlueAccent),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                myContainer(text: " π ", bg: Colors.green),
-                myContainer(text: " e ", bg: Colors.green),
-                myContainer(
-                    text: "xʸ",
-                    bg: Colors.green,
-                    callback: () {
-                      click(" ^ ");
-                    }),
-                myContainer(text: " ÷ ", bg: Colors.green),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                myContainer(text: "1"),
-                myContainer(text: "2"),
-                myContainer(text: "3"),
-                myContainer(text: " X ", bg: Colors.green),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                myContainer(text: "4"),
-                myContainer(text: "5"),
-                myContainer(text: "6"),
-                myContainer(text: " - ", bg: Colors.green),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                myContainer(text: "7"),
-                myContainer(text: "8"),
-                myContainer(text: "9"),
-                myContainer(text: " + ", bg: Colors.green),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                myContainer(text: "0", width: 0.5),
-                myContainer(text: ",", bg: Colors.white54, callback: virgula),
-                myContainer(
-                    text: "=",
-                    bg: Colors.green,
-                    callback: () {
-                      setState(() {
-                        calculus = calc(calculus);
-                      });
-                    }),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                myContainer(text: "A", bg: Colors.red, callback: a),
-                myContainer(text: "B", bg: Colors.red, callback: b),
-                myContainer(text: "C", bg: Colors.red, callback: c),
-                myContainer(text: "D", bg: Colors.red, callback: d),
-              ],
-            ),
-          ],
-        ),
+          ),
+          Row(
+            children: <Widget>[
+              myContainer(text: "CE", bg: Colors.orange, callback: clear),
+              myContainer(text: "⌫", bg: Colors.green, callback: delete),
+              myContainer(text: " ( ", bg: Colors.lightBlueAccent),
+              myContainer(text: " ) ", bg: Colors.lightBlueAccent),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              myContainer(text: " π ", bg: Colors.green),
+              myContainer(text: " e ", bg: Colors.green),
+              myContainer(
+                  text: "xʸ",
+                  bg: Colors.green,
+                  callback: () {
+                    click(" ^ ");
+                  }),
+              myContainer(text: " ÷ ", bg: Colors.green),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              myContainer(text: "1"),
+              myContainer(text: "2"),
+              myContainer(text: "3"),
+              myContainer(text: " X ", bg: Colors.green),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              myContainer(text: "4"),
+              myContainer(text: "5"),
+              myContainer(text: "6"),
+              myContainer(text: " - ", bg: Colors.green),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              myContainer(text: "7"),
+              myContainer(text: "8"),
+              myContainer(text: "9"),
+              myContainer(text: " + ", bg: Colors.green),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              myContainer(text: "0", width: 0.5),
+              myContainer(text: ",", bg: Colors.white54, callback: virgula),
+              myContainer(
+                  text: "=",
+                  bg: Colors.green,
+                  callback: () {
+                    setState(() {
+                      calculus = calc(calculus);
+                    });
+                  }),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              myContainer(text: "A", bg: Colors.red, callback: a),
+              myContainer(text: "B", bg: Colors.red, callback: b),
+              myContainer(text: "C", bg: Colors.red, callback: c),
+              myContainer(text: "D", bg: Colors.red, callback: d),
+            ],
+          ),
+        ],
       ),
     );
   }

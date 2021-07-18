@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:sql_treino/services/database/storage.dart';
+import 'package:sql_treino/services/local/RAM.dart';
 
-import 'package:sql_treino/utils/functions.dart';
-import 'package:sql_treino/utils/storage.dart';
-
-class Home extends StatefulWidget {
+class ToDoPage extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _ToDoPageState createState() => _ToDoPageState();
 }
 
-class _HomeState extends State<Home> {
+class _ToDoPageState extends State<ToDoPage> {
   List _toDoList = [];
   TextEditingController textController = TextEditingController();
   Map<String, dynamic> _lastRemoved;
@@ -17,13 +16,10 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _start();
-  }
-
-  void _start() async {
-    List data = await _readData();
-    setState(() {
-      _toDoList = data;
+    _readData().then((value) {
+      setState(() {
+        _toDoList = value;
+      });
     });
   }
 
@@ -120,53 +116,50 @@ class _HomeState extends State<Home> {
   }
 
   Widget build(BuildContext context) {
-    return popScope(
-      context,
-      Scaffold(
-        appBar: AppBar(
-          title: Text("Lista de Tarefas"),
-          centerTitle: true,
-          backgroundColor: Colors.blue,
-          leading: backToPageLeading(context),
-        ),
-        body: Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: textController,
-                      decoration: InputDecoration(
-                        labelText: "Nova tarefa",
-                        labelStyle: TextStyle(color: Colors.blue),
-                      ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Lista de Tarefas"),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+        leading: BackButton(),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: textController,
+                    decoration: InputDecoration(
+                      labelText: "Nova tarefa",
+                      labelStyle: TextStyle(color: Colors.blue),
                     ),
                   ),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.blue),
-                      foregroundColor: MaterialStateProperty.all(Colors.white),
-                    ),
-                    child: Text("ADD"),
-                    onPressed: _addToDo,
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: RefreshIndicator(
-                child: ListView.builder(
-                  padding: EdgeInsets.only(top: 10),
-                  itemCount: _toDoList.length,
-                  itemBuilder: listItem,
                 ),
-                onRefresh: _sortToDo,
-              ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                  ),
+                  child: Text("ADD"),
+                  onPressed: _addToDo,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              child: ListView.builder(
+                padding: EdgeInsets.only(top: 10),
+                itemCount: _toDoList.length,
+                itemBuilder: listItem,
+              ),
+              onRefresh: _sortToDo,
+            ),
+          ),
+        ],
       ),
     );
   }

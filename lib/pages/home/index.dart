@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/utils/functions.dart';
+import 'package:sql_treino/services/local/RAM.dart';
 
-import 'package:sql_treino/utils/storage.dart';
-
-class UserPage extends StatefulWidget {
+class HomePage extends StatefulWidget {
   @override
-  _UserPageState createState() => _UserPageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _HomePageState extends State<HomePage> {
   Future validate() async {
     RAM ram = await RAM().load();
     Map data = await ram.readData();
@@ -31,7 +29,7 @@ class _UserPageState extends State<UserPage> {
         );
       default:
         if (snapshot.hasError || snapshot.data == null) {
-          route(context, "/");
+          Navigator.pushReplacementNamed(context, "/login");
           return Container();
         } else {
           return Container(
@@ -69,7 +67,7 @@ class _UserPageState extends State<UserPage> {
   void logout() async {
     RAM ram = await RAM().load();
     await ram.editData("logged", null);
-    route(context, "/");
+    Navigator.pushReplacementNamed(context, "/login");
   }
 
   Widget button(
@@ -85,7 +83,7 @@ class _UserPageState extends State<UserPage> {
           text,
           style: TextStyle(color: textColor),
         ),
-        onPressed: () => route(context, "/$routeName"),
+        onPressed: () => Navigator.pushNamed(context, "/$routeName"),
       ),
     );
   }

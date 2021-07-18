@@ -2,16 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/services.dart';
+import 'package:sql_treino/services/cryptography/cryptography.dart';
+import 'package:sql_treino/services/database/storage.dart';
+import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/shared/widgets/alertWidget.dart';
 
-import 'package:sql_treino/utils/functions.dart';
-import 'package:sql_treino/utils/storage.dart';
-
-class Login extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginPageState extends State<LoginPage> {
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -31,7 +32,7 @@ class _LoginState extends State<Login> {
       RAM ram = await RAM().load();
       Map data = await ram.readData();
       if (data['logged'] != null) {
-        Navigator.pushNamed(context, "/userpage");
+        Navigator.pushReplacementNamed(context, "/userpage");
       }
     });
   }
@@ -92,7 +93,7 @@ class _LoginState extends State<Login> {
         // 200 OK
         RAM ram = await RAM().load();
         ram.editData("logged", _email.text);
-        route(context, "/userpage");
+        Navigator.pushReplacementNamed(context, "/userpage");
       } else {
         // 400 Bad Request
         alert(
@@ -133,7 +134,7 @@ class _LoginState extends State<Login> {
 
   Widget register() {
     return TextButton(
-      onPressed: () => route(context, "/register"),
+      onPressed: () => Navigator.pushNamed(context, "/register"),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -162,7 +163,7 @@ class _LoginState extends State<Login> {
           onPressed: () async {
             RAM ram = await RAM().load();
             if ((await ram.readData())['logged'] != null) {
-              route(context, "/userpage");
+              Navigator.pushReplacementNamed(context, "/userpage");
             }
           },
         ),

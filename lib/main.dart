@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 
-import 'package:sql_treino/pages/register.dart';
-import 'package:sql_treino/pages/login.dart';
-import 'package:sql_treino/pages/userPage.dart';
+import 'package:sql_treino/pages/register/index.dart';
+import 'package:sql_treino/pages/login/index.dart';
+import 'package:sql_treino/pages/home/index.dart';
+import 'package:sql_treino/pages/calculadora/index.dart';
+import 'package:sql_treino/pages/IMC/index.dart';
+import 'package:sql_treino/pages/colorGame/index.dart';
+import 'package:sql_treino/pages/conversor/index.dart';
+import 'package:sql_treino/pages/toDo/index.dart';
+import 'package:sql_treino/pages/workoutTimer/index.dart' as WorkoutTimer;
 
-import 'package:sql_treino/pages/calculator.dart' as calculator;
-import 'package:sql_treino/pages/calculoDeIMC.dart' as calculodeIMC;
-import 'package:sql_treino/pages/colorGame.dart' as colorGame;
-import 'package:sql_treino/pages/conversorDeMoedas.dart' as conversorDeMoedas;
-import 'package:sql_treino/pages/todoList.dart' as todoList;
-import 'package:sql_treino/pages/workoutTimer.dart' as workoutTimer;
-
-import 'package:sql_treino/utils/functions.dart';
+import 'package:sql_treino/shared/themes/theme.dart';
 
 void main() => runApp(MaterialApp(
-      color: colorTheme.primary,
-      home: Login(),
+      color: AppTheme.primary,
+      initialRoute: "/login",
       routes: <String, WidgetBuilder>{
-        "/register": (context) => Register(),
-        "/userpage": (context) => UserPage(),
-        "/calculator": (context) => calculator.Home(),
-        "/calculodeimc": (context) => calculodeIMC.Home(),
-        "/colorgame": (context) => colorGame.Home(),
-        "/conversordemoedas": (context) => conversorDeMoedas.Home(),
-        "/todolist": (context) => todoList.Home(),
-        "/workouttimer-run": (context) => workoutTimer.Run(),
-        "/workouttimer-saved": (context) => workoutTimer.Saved(),
-        "/workouttimer-edit": (context) => workoutTimer.Edit(),
+        "/login": (context) => LoginPage(),
+        "/register": (context) => RegisterPage(),
+        "/userpage": (context) => HomePage(),
+        "/calculator": (context) => CalculadoraPage(),
+        "/calculodeimc": (context) => IMCPage(),
+        "/colorgame": (context) => ColorGamePage(),
+        "/conversordemoedas": (context) => ConversorPage(),
+        "/todolist": (context) => ToDoPage(),
+        "/workouttimer-run": (context) => WorkoutTimer.Run(),
+        "/workouttimer-saved": (context) => WorkoutTimer.Saved(),
+        "/workouttimer-edit": (context) => WorkoutTimer.Edit(),
       },
     ));

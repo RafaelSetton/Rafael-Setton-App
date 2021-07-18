@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sql_treino/utils/functions.dart';
+import 'package:sql_treino/services/database/storage.dart';
+import 'package:sql_treino/shared/themes/theme.dart';
+import 'package:sql_treino/shared/widgets/alertWidget.dart';
 
-import 'package:sql_treino/utils/storage.dart';
-
-class Register extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
-  _RegisterState createState() => _RegisterState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
   TextEditingController _name = TextEditingController();
@@ -61,7 +61,7 @@ class _RegisterState extends State<Register> {
     return Container(
       height: 200,
       child: CupertinoDatePicker(
-        backgroundColor: colorTheme.backGround,
+        backgroundColor: AppTheme.backGround,
         mode: CupertinoDatePickerMode.date,
         initialDateTime: _birthday,
         onDateTimeChanged: (DateTime date) {
@@ -118,13 +118,13 @@ class _RegisterState extends State<Register> {
         child: Text(
           "Register",
           style: TextStyle(
-            color: colorTheme.textOnPrimary,
+            color: AppTheme.textOnPrimary,
             fontSize: 27,
             fontWeight: FontWeight.w500,
           ),
         ),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(colorTheme.primary),
+          backgroundColor: MaterialStateProperty.all(AppTheme.primary),
           padding: MaterialStateProperty.all(
               EdgeInsets.symmetric(horizontal: 15, vertical: 10)),
         ),
@@ -139,7 +139,7 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         title: Text("Registro"),
         centerTitle: true,
-        leading: backToPageLeading(context, target: "/"),
+        leading: BackButton(),
       ),
       body: SingleChildScrollView(
         child: Container(
