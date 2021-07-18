@@ -79,18 +79,20 @@ class _SavedState extends State<Saved> {
           duration: Duration(seconds: 3),
         );
         try {
-          Scaffold.of(context).removeCurrentSnackBar();
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
         } catch (err) {}
-        Scaffold.of(context).showSnackBar(snack);
+        ScaffoldMessenger.of(context).showSnackBar(snack);
       },
       child: Container(
         margin: EdgeInsets.symmetric(
           horizontal: 5,
           vertical: 1,
         ),
-        child: FlatButton(
+        child: TextButton(
           onPressed: () async => await choose(index),
-          padding: EdgeInsets.zero,
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all(EdgeInsets.zero),
+          ),
           child: Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -339,15 +341,16 @@ class _RunState extends State<Run> {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 3),
-        child: FlatButton(
-          color: Colors.grey[200],
+        child: TextButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.grey[200]),
+              fixedSize: MaterialStateProperty.all(Size.fromHeight(100))),
           onPressed: onPressed,
           child: Icon(
             icon,
             color: color,
             size: 75,
           ),
-          height: 100,
         ),
       ),
     );
@@ -482,52 +485,62 @@ class _EditState extends State<Edit> {
 
   // Handle DB connections
 
-  Future _saveData() async {
+  Widget dialogBuilder(BuildContext context) {
     TextEditingController saveNameController = TextEditingController();
-    showDialog(
-      context: context,
-      child: Dialog(
-        child: Container(
-          height: 150,
-          width: 300,
-          margin: EdgeInsets.all(3),
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black87),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextField(
-                decoration: new InputDecoration(
-                    hintText: "Treino 01",
-                    hintStyle: TextStyle(color: Colors.black26),
-                    labelText: "Nome do Treino",
-                    labelStyle: TextStyle(color: Colors.blue)),
-                controller: saveNameController,
+    return Dialog(
+      child: Container(
+        height: 150,
+        width: 300,
+        margin: EdgeInsets.all(3),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black87),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextField(
+              decoration: new InputDecoration(
+                  hintText: "Treino 01",
+                  hintStyle: TextStyle(color: Colors.black26),
+                  labelText: "Nome do Treino",
+                  labelStyle: TextStyle(color: Colors.blue)),
+              controller: saveNameController,
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all(Colors.lightBlue[500]),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
               ),
-              RaisedButton(
-                color: Colors.lightBlue[500],
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
-                child: Text("Salvar"),
-                onPressed: () async {
-                  String userEmail = await getUserEmail();
-                  await WorkoutDB().post(
-                    userEmail,
-                    saveNameController.text,
-                    sequence.map((e) => e.toList()).toList(),
-                  );
+              child: Text("Salvar"),
+              onPressed: () async {
+                String userEmail = await getUserEmail();
+                await WorkoutDB().post(
+                  userEmail,
+                  saveNameController.text,
+                  sequence.map((e) => e.toList()).toList(),
+                );
 
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
+                Navigator.pop(context);
+              },
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Future _saveData() async {
+    showDialog(
+      context: context,
+      builder: dialogBuilder,
     );
   }
 
@@ -610,8 +623,8 @@ class _EditState extends State<Edit> {
           ),
           duration: Duration(seconds: 3),
         );
-        Scaffold.of(context).removeCurrentSnackBar();
-        Scaffold.of(context).showSnackBar(snack);
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(snack);
       },
       child: Container(
         child: Row(
@@ -621,14 +634,18 @@ class _EditState extends State<Edit> {
             Container(
               height: 50,
               width: 50,
-              child: RaisedButton(
-                color: Colors.red,
-                child: Text("-"),
-                textColor: Colors.white,
-                onPressed: () async => await deleteItem(section.key),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
                 ),
+                child: Text("-"),
+                onPressed: () async => await deleteItem(section.key),
               ),
             ),
           ],
@@ -645,14 +662,18 @@ class _EditState extends State<Edit> {
         Container(
           height: 50,
           width: 50,
-          child: RaisedButton(
-            color: Colors.blue,
-            child: Text("+"),
-            textColor: Colors.white,
-            onPressed: () async => await addItem(),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25),
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.blue),
+              foregroundColor: MaterialStateProperty.all(Colors.white),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
             ),
+            child: Text("+"),
+            onPressed: () async => await addItem(),
           ),
         ),
       ],
@@ -683,9 +704,15 @@ class _EditState extends State<Edit> {
               width: 150,
               height: 40,
               margin: EdgeInsets.only(bottom: 10),
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.green),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
                 child: Text(
                   "Iniciar",
                   style: TextStyle(
@@ -693,7 +720,6 @@ class _EditState extends State<Edit> {
                     fontSize: 25,
                   ),
                 ),
-                color: Colors.green,
                 onPressed: () {
                   route(context, "/workouttimer-run");
                 },
@@ -707,9 +733,12 @@ class _EditState extends State<Edit> {
             Container(
               padding: EdgeInsets.all(15),
               color: Colors.transparent,
-              child: RaisedButton(
-                elevation: 0,
-                color: Colors.transparent,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(Colors.transparent),
+                  elevation: MaterialStateProperty.all(0),
+                ),
                 child: Text(
                   "Ver Salvos",
                   style: TextStyle(
@@ -725,11 +754,16 @@ class _EditState extends State<Edit> {
             Container(
               padding: EdgeInsets.all(15),
               color: Colors.transparent,
-              child: RaisedButton(
-                elevation: 0,
-                color: Colors.blue,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  elevation: MaterialStateProperty.all(0),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
                 child: Text(
                   "Salvar Treino",
                   style: TextStyle(

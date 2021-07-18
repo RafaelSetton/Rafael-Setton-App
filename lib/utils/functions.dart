@@ -29,7 +29,7 @@ Future<void> alert(BuildContext context, String title, String text,
     {List<Widget> actions, bool okButton: true}) async {
   actions = actions == null ? [] : actions;
   if (okButton) {
-    actions.add(FlatButton(
+    actions.add(TextButton(
       child: Text('OK'),
       onPressed: () {
         Navigator.of(context).pop();

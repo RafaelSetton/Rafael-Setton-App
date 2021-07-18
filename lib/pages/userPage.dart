@@ -73,12 +73,14 @@ class _UserPageState extends State<UserPage> {
   }
 
   Widget button(
-      String text, Color textColor, Color backGround, String routeName) {
+      String text, Color textColor, Color background, String routeName) {
     return Container(
       width: 200,
       margin: EdgeInsets.all(10),
-      child: RaisedButton(
-        color: backGround,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(background),
+        ),
         child: Text(
           text,
           style: TextStyle(color: textColor),
@@ -97,7 +99,7 @@ class _UserPageState extends State<UserPage> {
         appBar: AppBar(
           title: Text("Página do Usuário"),
           centerTitle: true,
-          leading: FlatButton(
+          leading: TextButton(
               onPressed: logout,
               child: Text(
                 "Log Out",

@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
       List todos = (await UserDB().show(email))['data']["todos"];
       return todos == null ? [] : todos;
     } catch (err) {
-      return List();
+      return [];
     }
   }
 
@@ -100,8 +100,8 @@ class _HomeState extends State<Home> {
           ),
           duration: Duration(seconds: 3),
         );
-        Scaffold.of(context).removeCurrentSnackBar();
-        Scaffold.of(context).showSnackBar(snack);
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(snack);
       },
       child: CheckboxListTile(
         onChanged: (value) {
@@ -144,10 +144,12 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
-                  RaisedButton(
-                    color: Colors.blue,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.blue),
+                      foregroundColor: MaterialStateProperty.all(Colors.white),
+                    ),
                     child: Text("ADD"),
-                    textColor: Colors.white,
                     onPressed: _addToDo,
                   ),
                 ],

@@ -107,7 +107,7 @@ class _LoginState extends State<Login> {
 
   Widget loginButton() {
     return Container(
-      child: RaisedButton(
+      child: ElevatedButton(
         onPressed: () async {
           if (_formKey.currentState.validate()) {
             await tryLogin();
@@ -122,14 +122,17 @@ class _LoginState extends State<Login> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        color: Colors.blue[400],
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.blue[400]),
+          padding: MaterialStateProperty.all(
+              EdgeInsets.symmetric(horizontal: 30, vertical: 10)),
+        ),
       ),
     );
   }
 
   Widget register() {
-    return FlatButton(
+    return TextButton(
       onPressed: () => route(context, "/register"),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

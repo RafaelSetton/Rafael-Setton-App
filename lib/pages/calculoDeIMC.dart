@@ -105,7 +105,7 @@ class _HomeState extends State<Home> {
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10.0),
                   height: 70,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         _calcular();
@@ -118,7 +118,9 @@ class _HomeState extends State<Home> {
                         fontSize: 20,
                       ),
                     ),
-                    color: Colors.green,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.green),
+                    ),
                   ),
                 ),
                 Text(

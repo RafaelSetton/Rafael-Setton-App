@@ -79,7 +79,7 @@ class _RegisterState extends State<Register> {
         "email": _email.text.trim(),
         "password": _password.text,
         "birthday": "${_birthday.day}/${_birthday.month}/${_birthday.year}",
-        "data": {"todos": List(), "colorgamepts": 0},
+        "data": {"todos": [], "colorgamepts": 0},
       };
       String erro = await UserDB().post(data, create: true);
       if (erro == "senha") {
@@ -109,7 +109,7 @@ class _RegisterState extends State<Register> {
 
   Widget registerButton() {
     return Container(
-      child: RaisedButton(
+      child: ElevatedButton(
         onPressed: () async {
           if (_formkey.currentState.validate()) {
             tryRegister();
@@ -123,8 +123,11 @@ class _RegisterState extends State<Register> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        color: colorTheme.primary,
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(colorTheme.primary),
+          padding: MaterialStateProperty.all(
+              EdgeInsets.symmetric(horizontal: 15, vertical: 10)),
+        ),
       ),
     );
   }
@@ -136,6 +139,7 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         title: Text("Registro"),
         centerTitle: true,
+        leading: backToPageLeading(context, target: "/"),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -145,11 +149,7 @@ class _RegisterState extends State<Register> {
             child: Column(
               children: <Widget>[
                 input(_name, "Nome Completo", "João da Silva Oliveira"),
-                input(
-                  _email,
-                  "E-mail",
-                  "seu_nome@exemplo.com",
-                ),
+                input(_email, "E-mail", "seu_nome@exemplo.com"),
                 input(_password, "Senha", "", hide: true),
                 input(_confirm, "Confirmar Senha", "", hide: true),
                 birthdayInput(),

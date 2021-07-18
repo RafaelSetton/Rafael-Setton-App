@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
       results++;
       barHeight += 20;
     } else {
-      barHeight -= 20;
+      barHeight -= barHeight > 20 ? 20 : barHeight;
     }
     newText();
   }
@@ -65,11 +65,14 @@ class _HomeState extends State<Home> {
         height: 100,
         padding: EdgeInsets.all(5),
         color: Colors.black,
-        child: RaisedButton(
+        child: ElevatedButton(
           onPressed: () {
             click(color);
           },
-          color: color,
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(color),
+          ),
+          child: Container(),
         ));
   }
 

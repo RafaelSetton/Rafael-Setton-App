@@ -242,21 +242,24 @@ class _HomeState extends State<Home> {
       Color bg = Colors.white70,
       callback = false}) {
     if (callback == false) {
-      callback = () {
-        click(text);
-      };
+      callback = () => click(text);
     }
     return Container(
       width: MediaQuery.of(context).size.width * width,
       height: MediaQuery.of(context).size.height / 10,
-      child: RaisedButton(
+      child: ElevatedButton(
         child: Text(
           text,
           style: TextStyle(
-              fontSize: 30, color: Colors.black, fontWeight: FontWeight.bold),
+            fontSize: 30,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         onPressed: callback,
-        color: bg,
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(bg),
+        ),
       ),
     );
   }
