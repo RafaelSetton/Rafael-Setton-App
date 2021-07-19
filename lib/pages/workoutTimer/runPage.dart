@@ -14,12 +14,12 @@ class _RunState extends State<Run> {
   bool isSoundPlaying = false;
 
   FlutterTts textToSpeech = FlutterTts();
-  Timer speakControlTimer;
+  late Timer speakControlTimer;
   List spoken = [];
   bool announced = false;
   int ready = 0;
 
-  List<Map<String, int>> sequence = [];
+  Map<String, int> sequence = Map();
   CountDownController timeController = CountDownController();
 
   @override
@@ -27,8 +27,8 @@ class _RunState extends State<Run> {
     super.initState();
     Timer(Duration(milliseconds: 1), () async {
       await _loadRAM();
-      String thisName = sequence[0].keys.first;
-      int thisTime = sequence[0][thisName];
+      String thisName = sequence.keys.first;
+      int thisTime = sequence[thisName]!;
       textToSpeech.speak(
           "Vamos começar. Primeiro exercício: $thisName, $thisTime segundos");
       textToSpeech.setCompletionHandler(() {
@@ -49,11 +49,8 @@ class _RunState extends State<Run> {
   // Handle DB connections
 
   Future _loadRAM() async {
-    List workout = await loadRAM(); // List<Map<String, String>
+    sequence = await loadRAM();
     setState(() {
-      sequence = workout
-          .map((pair) => <String, int>{pair.keys.first: pair.values.first})
-          .toList();
       ready++;
     });
   }
@@ -62,8 +59,8 @@ class _RunState extends State<Run> {
 
   void announceNext() {
     try {
-      String nextName = sequence[1].keys.first;
-      int nextTime = sequence[1][nextName];
+      String nextName = sequence.keys.elementAt(1);
+      int nextTime = sequence[nextName]!;
       textToSpeech.speak("Próximo exercício: $nextName, $nextTime segundos");
     } on RangeError {
       textToSpeech.speak("Finalizando treino");
@@ -96,12 +93,12 @@ class _RunState extends State<Run> {
 
   Widget circleTimer() {
     return CircularCountDownTimer(
-      duration: sequence.first.values.first,
+      duration: sequence.values.first,
       controller: timeController,
       width: MediaQuery.of(context).size.width / 2,
       height: MediaQuery.of(context).size.height / 2,
-      color: Colors.grey[300],
-      fillColor: Colors.blue[300],
+      ringColor: Colors.grey.shade300,
+      fillColor: Colors.blue.shade300,
       backgroundColor: Colors.blue[900],
       strokeWidth: 20.0,
       strokeCap: StrokeCap.round,
@@ -114,7 +111,7 @@ class _RunState extends State<Run> {
       autoStart: true,
       onStart: () {
         print('Countdown Started');
-        textToSpeech.speak(sequence.first.keys.first);
+        textToSpeech.speak(sequence.keys.first);
 
         speakControlTimer =
             Timer.periodic(Duration(milliseconds: 200), periodicTimeHandler);
@@ -126,8 +123,8 @@ class _RunState extends State<Run> {
           spoken = [];
           announced = false;
           if (sequence.length > 1) {
-            sequence.removeAt(0);
-            timeController.restart(duration: sequence.first.values.first);
+            sequence.remove(sequence.keys.first);
+            timeController.restart(duration: sequence.values.first);
           } else {
             timeController.pause();
             () async {
@@ -140,7 +137,7 @@ class _RunState extends State<Run> {
     );
   }
 
-  Widget button(IconData icon, Color color, Function onPressed) {
+  Widget button(IconData icon, Color color, void Function() onPressed) {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 3),
@@ -204,7 +201,7 @@ class _RunState extends State<Run> {
               Container(
                 padding: EdgeInsets.all(15),
                 child: Text(
-                  sequence.length > 0 ? sequence.first.keys.first : "",
+                  sequence.length > 0 ? sequence.keys.first : "",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,

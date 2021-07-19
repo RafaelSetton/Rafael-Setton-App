@@ -1,39 +1,19 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RAM {
-  File file;
+  static late SharedPreferences prefs;
 
-  RAM();
-
-  Future<RAM> load() async {
-    final directory = await getApplicationDocumentsDirectory();
-    file = File(directory.path + "RAM.json");
-    if (!(await file.exists())) {
-      await file.create();
+  static Future<String?> read(String key) async {
+    if (prefs.containsKey(key)) {
+      return prefs.getString(key)!;
     }
-
-    return this;
+    return null;
   }
 
-  Future<Map> readData() async {
-    String dataString = await file.readAsString();
-
-    return dataString.isNotEmpty ? jsonDecode(dataString) : Map();
-  }
-
-  Future editData(String id, dynamic data) async {
-    final previous = await readData();
-    previous[id] = data;
-    String dataString = jsonEncode(previous);
-    await file.writeAsString(dataString);
-  }
-
-  Future deleteData(id) async {
-    Map all = await readData();
-    all.removeWhere((k, v) => k == id);
-    file.writeAsString(jsonEncode(all));
+  static Future write(String key, String? value) async {
+    if (value == null)
+      await prefs.remove(key);
+    else
+      await prefs.setString(key, value);
   }
 }

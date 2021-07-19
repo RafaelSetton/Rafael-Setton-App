@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -14,8 +13,8 @@ class _ConversorPageState extends State<ConversorPage> {
   TextEditingController dolaresController = TextEditingController();
   TextEditingController eurosController = TextEditingController();
 
-  double dolar;
-  double euro;
+  late double dolar;
+  late double euro;
 
   static const request = "https://economia.awesomeapi.com.br/json/all";
 
@@ -105,12 +104,12 @@ class _ConversorPageState extends State<ConversorPage> {
   }
 
   Future<Map> getData() async {
-    http.Response response = await http.get(request);
+    http.Response response = await http.get(Uri.parse(request));
     return json.decode(response.body);
   }
 
   TextField buildTextField(String label, String prefix,
-      TextEditingController controller, Function onChange) {
+      TextEditingController controller, void Function(String) onChange) {
     return TextField(
       onChanged: onChange,
       controller: controller,
@@ -133,8 +132,8 @@ class _ConversorPageState extends State<ConversorPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
+    return Theme(
+      data: ThemeData(
           hintColor: Colors.amber,
           primaryColor: Colors.white,
           inputDecorationTheme: InputDecorationTheme(
@@ -144,7 +143,7 @@ class _ConversorPageState extends State<ConversorPage> {
                 OutlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
             hintStyle: TextStyle(color: Colors.amber),
           )),
-      home: Scaffold(
+      child: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
           centerTitle: true,

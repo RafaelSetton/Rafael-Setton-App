@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' as Foundation;
-import 'package:flutter/services.dart';
 import 'package:sql_treino/services/cryptography/cryptography.dart';
 import 'package:sql_treino/services/database/storage.dart';
 import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/shared/functions.dart';
+import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,26 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-
-    if (Foundation.kDebugMode) {
-      // Database Updates, etc.
-    }
-
-    Timer(Duration(milliseconds: 10), () async {
-      RAM ram = await RAM().load();
-      Map data = await ram.readData();
-      if (data['logged'] != null) {
-        Navigator.pushReplacementNamed(context, "/userpage");
-      }
-    });
-  }
 
   Widget input(TextEditingController controller, String label, String hint,
       {bool hide = false}) {
@@ -68,17 +48,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
         cursorWidth: 1.5,
         cursorColor: Color.fromRGBO(40, 40, 230, 1),
-        validator: (value) {
-          return value.isEmpty
-              ? "O campo \"$label\" deve ser preenchido."
-              : null;
-        },
+        validator: emptyValidator("O campo \"$label\" deve ser preenchido."),
       ),
     );
   }
 
   Future tryLogin() async {
-    Map user = await UserDB().show(_email.text);
+    UserModel? user = await UserDB.show(_email.text);
 
     if (user == null) {
       // 404 Not Found
@@ -89,11 +65,13 @@ class _LoginPageState extends State<LoginPage> {
       );
       _password.text = "";
     } else {
-      if (_password.text == Cryptography.decrypt(user['password'])) {
+      if (_password.text == Cryptography.decrypt(user.password)) {
         // 200 OK
-        RAM ram = await RAM().load();
-        ram.editData("logged", _email.text);
-        Navigator.pushReplacementNamed(context, "/userpage");
+
+        await RAM.write("user", _email.text);
+        await loadVars();
+        Navigator.pushReplacementNamed(context, "/userpage",
+            arguments: _email.text);
       } else {
         // 400 Bad Request
         alert(
@@ -110,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       child: ElevatedButton(
         onPressed: () async {
-          if (_formKey.currentState.validate()) {
+          if (_formKey.currentState!.validate()) {
             await tryLogin();
           }
           //_formKey = GlobalKey<FormState>();
@@ -132,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget register() {
+  Widget goToRegisterButton() {
     return TextButton(
       onPressed: () => Navigator.pushNamed(context, "/register"),
       child: Row(
@@ -158,15 +136,6 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: Text("Login"),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.person),
-          onPressed: () async {
-            RAM ram = await RAM().load();
-            if ((await ram.readData())['logged'] != null) {
-              Navigator.pushReplacementNamed(context, "/userpage");
-            }
-          },
-        ),
       ),
       body: Container(
         padding: EdgeInsets.only(top: 20, left: 10, right: 10),
@@ -178,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                 input(_email, "E-mail", "seunome@exemplo.com"),
                 input(_password, "Senha", "", hide: true),
                 loginButton(),
-                register(),
+                goToRegisterButton(),
               ],
             ),
           ),

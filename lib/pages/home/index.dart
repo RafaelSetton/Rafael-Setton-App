@@ -2,71 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:sql_treino/services/local/RAM.dart';
 
 class HomePage extends StatefulWidget {
+  final String email;
+
+  const HomePage({Key? key, required this.email}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  Future validate() async {
-    RAM ram = await RAM().load();
-    Map data = await ram.readData();
-    return data["logged"];
-  }
-
-  Widget buildBody(BuildContext context, AsyncSnapshot snapshot) {
-    switch (snapshot.connectionState) {
-      case ConnectionState.none:
-      case ConnectionState.waiting:
-        return Center(
-          child: Text(
-            "Carregando...",
-            style: TextStyle(
-              color: Colors.blueAccent,
-              fontSize: 25,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        );
-      default:
-        if (snapshot.hasError || snapshot.data == null) {
-          Navigator.pushReplacementNamed(context, "/login");
-          return Container();
-        } else {
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            alignment: Alignment.center,
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    "Você está logado com o seguinte email:\n'${snapshot.data}'",
-                    style: TextStyle(
-                      fontSize: 20,
-                      height: 2,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  button("Calculadora", Colors.green, Colors.lightBlue[100],
-                      "calculator"),
-                  button("Cálculo de IMC", Colors.grey[50], Colors.green,
-                      "calculodeimc"),
-                  button("Color Game", Colors.purple, Colors.grey, "colorgame"),
-                  button("Conversor de Moedas", Colors.black,
-                      Colors.amberAccent, "conversordemoedas"),
-                  button("Todo List", Colors.grey[50], Colors.blue, "todolist"),
-                  button("Workout Timer", Colors.purple[50], Colors.red,
-                      "workouttimer-edit"),
-                ],
+  Widget bodyWidget() {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Text(
+              "Você está logado como\n'${widget.email}'",
+              style: TextStyle(
+                fontSize: 20,
+                height: 2,
               ),
+              textAlign: TextAlign.center,
             ),
-          );
-        }
-    }
+            button("Calculadora", Colors.green, Colors.lightBlue.shade100,
+                "calculator"),
+            button("Cálculo de IMC", Colors.grey.shade50, Colors.green,
+                "calculodeimc"),
+            button("Color Game", Colors.purple, Colors.grey, "colorgame"),
+            button("Conversor de Moedas", Colors.black, Colors.amberAccent,
+                "conversordemoedas"),
+            button("Todo List", Colors.grey.shade50, Colors.blue, "todolist"),
+            button("Workout Timer", Colors.purple.shade50, Colors.red,
+                "workouttimer-edit"),
+          ],
+        ),
+      ),
+    );
   }
 
   void logout() async {
-    RAM ram = await RAM().load();
-    await ram.editData("logged", null);
+    await RAM.write("user", null);
     Navigator.pushReplacementNamed(context, "/login");
   }
 
@@ -83,7 +60,8 @@ class _HomePageState extends State<HomePage> {
           text,
           style: TextStyle(color: textColor),
         ),
-        onPressed: () => Navigator.pushNamed(context, "/$routeName"),
+        onPressed: () => Navigator.pushNamed(context, "/$routeName",
+            arguments: widget.email),
       ),
     );
   }
@@ -106,10 +84,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               )),
         ),
-        body: FutureBuilder(
-          future: validate(),
-          builder: buildBody,
-        ),
+        body: bodyWidget(),
       ),
     );
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sql_treino/services/cryptography/cryptography.dart';
 import 'package:sql_treino/services/database/storage.dart';
+import 'package:sql_treino/shared/functions.dart';
+import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/themes/theme.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
 
@@ -48,11 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         cursorWidth: 1.5,
         cursorColor: Color.fromRGBO(40, 40, 230, 1),
-        validator: (value) {
-          return value.isEmpty
-              ? "O campo \"$label\" deve ser preenchido."
-              : null;
-        },
+        validator: emptyValidator("O campo \"$label\" deve ser preenchido."),
       ),
     );
   }
@@ -73,37 +72,45 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void tryRegister() async {
-    if (_password.text == _confirm.text) {
-      Map<String, dynamic> data = <String, dynamic>{
-        "name": _name.text.trim(),
-        "email": _email.text.trim(),
-        "password": _password.text,
-        "birthday": "${_birthday.day}/${_birthday.month}/${_birthday.year}",
-        "data": {"todos": [], "colorgamepts": 0},
-      };
-      String erro = await UserDB().post(data, create: true);
-      if (erro == "senha") {
-        alert(context, "Senha inválida",
-            "A sua senha contém um caractere inválido.\nOs caracteres válidos são:\na-z A-Z 0-9 .()!@#\$%&");
+    if (_password.text != _confirm.text) {
+      alert(context, "Erro",
+          "As senhas que você digitou não coincidem. Altere-as e tente novamente.");
+      _password.text = "";
+      _confirm.text = "";
+      return;
+    }
+    UserModel user = UserModel(
+      name: _name.text.trim(),
+      email: _email.text.trim(),
+      password: Cryptography.encrypt(_password.text),
+      birthday: "${_birthday.day}/${_birthday.month}/${_birthday.year}",
+      data: {"todos": [], "colorgamepts": 0},
+    );
+    String err = await UserDB.post(user, create: true);
+    switch (err) {
+      case "senha":
+        alert(
+            context,
+            "Senha inválida",
+            "A sua senha contém um caractere inválido.\n"
+                "Os caracteres válidos são:\n"
+                "a-z A-Z 0-9 .()!@#\$%&");
         _password.text = "";
         _confirm.text = "";
-      } else if (erro == "e-mail") {
+        break;
+      case "e-mail":
         alert(context, "E-mail inválido",
             "O e-mail que você digitou já está cadastrado.");
         _email.text = "";
-      } else {
+        break;
+      default:
         alert(context, "Registrado",
             "Parabens ${_name.text}, seu registro foi efetuado com sucesso");
         _name.text = "";
         _email.text = "";
         _password.text = "";
         _confirm.text = "";
-      }
-    } else {
-      alert(context, "Erro",
-          "As senhas que você digitou não coincidem. Altere-as e tente novamente.");
-      _password.text = "";
-      _confirm.text = "";
+        break;
     }
   }
 
@@ -111,7 +118,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Container(
       child: ElevatedButton(
         onPressed: () async {
-          if (_formkey.currentState.validate()) {
+          if (_formkey.currentState!.validate()) {
             tryRegister();
           }
         },

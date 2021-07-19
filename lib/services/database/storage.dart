@@ -1,86 +1,64 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:sql_treino/services/cryptography/cryptography.dart';
+import 'package:sql_treino/shared/models/userModel.dart';
 
 class UserDB {
-  Future post(Map data, {bool create = false}) async {
-    if (data['password'].contains(RegExp(r"[^a-zA-Z0-9 .()!@#$%&]"))) {
+  static CollectionReference get collection =>
+      FirebaseFirestore.instance.collection("users");
+
+  static Future post(UserModel user, {bool create = false}) async {
+    if (user.password.contains(RegExp(r"[^a-zA-Z0-9 .()!@#$%&]"))) {
       return "senha";
     } else if (create) {
-      final user = await show(data['email']);
-      if (user != null) {
+      final check = await show(user.email);
+      if (check != null) {
         return "e-mail";
       }
     }
-    data['password'] = Cryptography.encrypt(data['password']);
-    await Firestore.instance
-        .collection("users")
-        .document(data['email'])
-        .setData(data);
+
+    await collection.doc(user.email).set(user.toMap());
   }
 
-  Future<List<Map>> list() async {
-    // {birthday: str, data: {colorgamepts: int, todos: [{ok: bool, title: str}]}, email: str, name: str, password: str}
-    final response =
-        await Firestore.instance.collection("users").getDocuments();
-    return response.documents.map((e) => e.data).toList();
+  static Future<List<String>> list() async {
+    final response = await collection.get();
+    return response.docs.map((e) => e.id).toList();
   }
 
-  Future<Map> show(String email) async {
-    final all = await list();
-    final valids = all.where((user) => user['email'] == email);
-    return valids.length > 0 ? valids.first : null;
+  static Future<UserModel?> show(String email) async {
+    final document = await collection.doc(email).get();
+    return UserModel.fromMap(document.data() as Map<String, dynamic>);
   }
 
-  Future delete(String email) async {
-    Firestore.instance.collection("users").document(email).delete();
+  static Future delete(String email) async {
+    await collection.doc(email).delete();
   }
 }
 
 class WorkoutDB {
-  Future post(String userEmail, String name, List<List> data) async {
-    // data: [["name", "value"], ["name", "value"]]
-    await Firestore.instance
-        .collection("users")
-        .document(userEmail)
-        .collection("workouts")
-        .document(name)
-        .setData(<String, List>{
-      "items": data
-          .map((e) => <String, int>{e[0]: int.parse(e[1])})
-          .toList() // [{"name": "value"}, {"name": "value"}]
-    });
+  static late String userEmail;
+
+  static CollectionReference get collection => FirebaseFirestore.instance
+      .collection("users")
+      .doc(userEmail)
+      .collection("workouts");
+
+  static Future post(String name, Map<String, int> data) async {
+    // data: {"name1": int, "name2": int}
+    await collection.doc(name).set(data);
   }
 
-  Future<List<String>> list(String userEmail) async {
+  static Future<List<String>> list() async {
     // ["name1", "name2", "name3"]
-
-    final response = await Firestore.instance
-        .collection("users")
-        .document(userEmail)
-        .collection("workouts")
-        .getDocuments();
-
-    return response.documents.map((e) => e.documentID).toList();
+    final response = await collection.get();
+    return response.docs.map((e) => e.id).toList();
   }
 
-  Future<List<Map>> show(String userEmail, String name) async {
-    // [["name", "value"], ["name", "value"]]
-    final response = await Firestore.instance
-        .collection("users")
-        .document(userEmail)
-        .collection("workouts")
-        .document(name)
-        .get();
-    return response.data["items"].cast<Map<String, dynamic>>();
+  static Future<Map<String, int>> show(String name) async {
+    // {"name1": int, "name2": int}
+    final response = await collection.doc(name).get();
+    return Map<String, int>.from(response.data() as Map);
   }
 
-  Future delete(String userEmail, String name) async {
-    Firestore.instance
-        .collection("users")
-        .document(userEmail)
-        .collection("workouts")
-        .document(name)
-        .delete();
+  static Future delete(String name) async {
+    await collection.doc(name).delete();
   }
 }

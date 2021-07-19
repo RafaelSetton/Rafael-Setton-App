@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -12,7 +11,7 @@ class CalculadoraPage extends StatefulWidget {
 class _CalculadoraPageState extends State<CalculadoraPage> {
   String calculus = "";
   int maxScreenLength = 24;
-  String varA, varB, varC, varD;
+  String? varA, varB, varC, varD;
 
   void click(num) {
     setState(() {
@@ -200,7 +199,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       if (calculus != "") {
         varA = calc(calculus);
       } else if (varA != "") {
-        calculus = varA;
+        calculus = varA ?? "";
       }
     });
   }
@@ -210,7 +209,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       if (calculus != "") {
         varB = calc(calculus);
       } else if (varB != "") {
-        calculus = varB;
+        calculus = varB ?? "";
       }
     });
   }
@@ -220,7 +219,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       if (calculus != "") {
         varC = calc(calculus);
       } else if (varC != "") {
-        calculus = varC;
+        calculus = varC ?? "";
       }
     });
   }
@@ -230,17 +229,17 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       if (calculus != "") {
         varD = calc(calculus);
       } else if (varD != "") {
-        calculus = varD;
+        calculus = varD ?? "";
       }
     });
   }
 
   Container myContainer(
-      {String text,
+      {required String text,
       double width = 0.25,
       Color bg = Colors.white70,
-      callback = false}) {
-    if (callback == false) {
+      void Function()? callback}) {
+    if (callback == null) {
       callback = () => click(text);
     }
     return Container(

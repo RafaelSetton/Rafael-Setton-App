@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/database/storage.dart';
 import 'package:sql_treino/services/local/RAM.dart';
-import 'package:sql_treino/shared/functions.dart';
 
 class Saved extends StatefulWidget {
   @override
@@ -9,39 +10,37 @@ class Saved extends StatefulWidget {
 }
 
 class _SavedState extends State<Saved> {
-  List data;
-  String _lastRemoved;
-  int _lastRemovedPos;
+  late List data;
+  late String _lastRemovedName;
+  late Map<String, int> _lastRemovedValue;
+  late int _lastRemovedPos;
 
   Future choose(int index) async {
     String name = data[index];
-    String userEmail = await getUserEmail();
+    Map<String, int> workout = await WorkoutDB.show(name);
 
-    List<Map> workout = await WorkoutDB().show(userEmail, name);
-
-    RAM ram = await RAM().load();
-    await ram.editData("currentWorkout", workout);
-
+    await RAM.write("currentWorkout", jsonEncode(workout));
     Navigator.pop(context);
   }
 
-  Future<List> getData() async {
-    String userEmail = await getUserEmail();
-    return await WorkoutDB().list(userEmail);
-  }
-
-  Future _saveData() async {
-    String userEmail = await getUserEmail();
-    List old = await WorkoutDB().list(userEmail);
-
-    old.forEach((element) async {
-      if (!data.contains(element)) {
-        await WorkoutDB().delete(userEmail, element);
-      }
+  Future deleteItem(int index) async {
+    _lastRemovedName = data[index];
+    _lastRemovedValue = await WorkoutDB.show(_lastRemovedName);
+    _lastRemovedPos = index;
+    setState(() {
+      data.removeAt(index);
     });
+    await WorkoutDB.delete(_lastRemovedName);
   }
 
-  Widget listItem(context, index) {
+  Future restoreItem() async {
+    setState(() {
+      data.insert(_lastRemovedPos, _lastRemovedName);
+    });
+    await WorkoutDB.post(_lastRemovedName, _lastRemovedValue);
+  }
+
+  Widget listItem(BuildContext context, int index) {
     return Dismissible(
       background: Container(
         color: Colors.red,
@@ -55,22 +54,13 @@ class _SavedState extends State<Saved> {
       direction: DismissDirection.startToEnd,
       key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
       onDismissed: (direction) async {
-        setState(() {
-          _lastRemoved = data[index];
-          _lastRemovedPos = index;
-          data.removeAt(index);
-        });
-        await _saveData();
+        await deleteItem(index);
+
         final snack = SnackBar(
-          content: Text("Tarefa \"$_lastRemoved\" excluído!"),
+          content: Text("Tarefa \"$_lastRemovedName\" excluído!"),
           action: SnackBarAction(
             label: "Desfazer",
-            onPressed: () async {
-              setState(() async {
-                data.insert(_lastRemovedPos, _lastRemoved);
-                await _saveData();
-              });
-            },
+            onPressed: restoreItem,
           ),
           duration: Duration(seconds: 3),
         );
@@ -132,7 +122,7 @@ class _SavedState extends State<Saved> {
   Widget mainBody() {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Workout Timer"),
+        title: Text("Workout Timer - Treinos Salvos"),
         centerTitle: true,
         backgroundColor: Colors.blue,
         leading: BackButton(),
@@ -177,12 +167,8 @@ class _SavedState extends State<Saved> {
 
   @override
   Widget build(BuildContext context) {
-    if (this.data != null) {
-      return builder(
-          context, AsyncSnapshot.withData(ConnectionState.done, this.data));
-    }
     return FutureBuilder(
-      future: getData(),
+      future: WorkoutDB.list(),
       builder: builder,
     );
   }

@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sql_treino/shared/functions.dart';
 
 class IMCPage extends StatefulWidget {
   @override
@@ -82,9 +82,7 @@ class _IMCPageState extends State<IMCPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.green, fontSize: 28),
                 controller: weightController,
-                validator: (value) {
-                  return value.isEmpty ? "Insira o seu Peso!" : null;
-                },
+                validator: emptyValidator("Insira o seu Peso!"),
               ),
               TextFormField(
                 keyboardType: TextInputType.number,
@@ -95,16 +93,14 @@ class _IMCPageState extends State<IMCPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.green, fontSize: 28),
                 controller: heightController,
-                validator: (value) {
-                  return value.isEmpty ? "Insira a sua Altura!" : null;
-                },
+                validator: emptyValidator("Insira a sua Altura!"),
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 10.0),
                 height: 70,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState.validate()) {
+                    if (_formKey.currentState!.validate()) {
                       _calcular();
                     }
                   },

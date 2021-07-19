@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/database/storage.dart';
-import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/shared/models/userModel.dart';
 
 class ToDoPage extends StatefulWidget {
+  final String userEmail;
+
+  const ToDoPage({Key? key, required this.userEmail}) : super(key: key);
+
   @override
   _ToDoPageState createState() => _ToDoPageState();
 }
@@ -10,8 +14,8 @@ class ToDoPage extends StatefulWidget {
 class _ToDoPageState extends State<ToDoPage> {
   List _toDoList = [];
   TextEditingController textController = TextEditingController();
-  Map<String, dynamic> _lastRemoved;
-  int _lastRemovedPos;
+  late Map<String, dynamic> _lastRemoved;
+  late int _lastRemovedPos;
 
   @override
   void initState() {
@@ -24,19 +28,14 @@ class _ToDoPageState extends State<ToDoPage> {
   }
 
   Future _saveData() async {
-    RAM ram = await RAM().load();
-    String email = (await ram.readData())["logged"];
-    Map user = await UserDB().show(email);
-    user["data"]["todos"] = _toDoList;
-    await UserDB().post(user);
+    UserModel user = (await UserDB.show(widget.userEmail))!;
+    user.data["todos"] = _toDoList;
+    await UserDB.post(user);
   }
 
   Future<List> _readData() async {
     try {
-      RAM ram = await RAM().load();
-      String email = (await ram.readData())["logged"];
-      List todos = (await UserDB().show(email))['data']["todos"];
-      return todos == null ? [] : todos;
+      return (await UserDB.show(widget.userEmail))!.data["todos"];
     } catch (err) {
       return [];
     }

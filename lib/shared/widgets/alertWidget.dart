@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+const List<Widget> _emptyList = [];
+
 Future<void> alert(BuildContext context, String title, String text,
-    {List<Widget> actions, bool okButton: true}) async {
-  actions = actions == null ? [] : actions;
+    {List<Widget> actions = _emptyList, bool okButton: true}) async {
   if (okButton) {
     actions.add(TextButton(
       child: Text('OK'),

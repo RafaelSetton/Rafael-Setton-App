@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/local/RAM.dart';
 
@@ -24,11 +26,7 @@ class Section {
   }
 }
 
-Future<List> loadRAM() async {
-  RAM ram = await RAM().load();
-  List workout = (await ram.readData())['currentWorkout'];
-  if (workout == null) {
-    workout = [];
-  }
-  return workout != null ? workout : [];
+Future<Map<String, int>> loadRAM() async {
+  dynamic read = (await RAM.read('currentWorkout'));
+  return Map<String, int>.from(jsonDecode(read ?? "{}"));
 }

@@ -3,6 +3,7 @@ import 'package:sql_treino/services/database/storage.dart';
 import 'dart:async';
 
 import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/shared/models/userModel.dart';
 
 class ColorGamePage extends StatefulWidget {
   @override
@@ -32,8 +33,8 @@ class _ColorGamePageState extends State<ColorGamePage> {
   String text = "Pressione Restart";
   Color color = Colors.grey;
   int results = 0;
-  double barHeight;
-  Timer timer;
+  double barHeight = 0;
+  late Timer timer;
 
   void newText() {
     setState(() {
@@ -88,26 +89,26 @@ class _ColorGamePageState extends State<ColorGamePage> {
       if (barHeight >= 1) {
         setState(() {
           barHeight -= 1;
-          int micro = results < 150 ? 30000 - results * 100 : 15000;
+          int milli = results < 150 ? (30 - results / 10).round() : 15;
           timer.cancel();
-          timer = Timer.periodic(Duration(microseconds: micro), periodic);
+          timer = Timer.periodic(Duration(milliseconds: milli), periodic);
         });
       } else {
         setState(() {
           text = "Pressione Restart";
           color = Colors.grey;
         });
-        RAM ram = await RAM().load();
-        String email = (await ram.readData())['logged'];
-        Map user = await UserDB().show(email);
-        if (results > user["data"]["colorgamepts"]) {
-          user["data"]["colorgamepts"] = results;
-          await UserDB().post(user);
+
+        String email = (await RAM.read("user"))!;
+        UserModel user = (await UserDB.show(email))!;
+        if (results > user.data["colorgamepts"]) {
+          user.data["colorgamepts"] = results;
+          await UserDB.post(user);
         }
       }
     }
 
-    timer = Timer.periodic(Duration(microseconds: 30000), periodic);
+    timer = Timer.periodic(Duration(milliseconds: 30), periodic);
   }
 
   @override

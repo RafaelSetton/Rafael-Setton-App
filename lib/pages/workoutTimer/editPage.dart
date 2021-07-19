@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sql_treino/pages/workoutTimer/shared.dart';
 import 'package:sql_treino/services/database/storage.dart';
 import 'package:sql_treino/services/local/RAM.dart';
-import 'package:sql_treino/shared/functions.dart';
 
 class Edit extends StatefulWidget {
   @override
@@ -14,8 +14,8 @@ class _EditState extends State<Edit> {
   TextEditingController nameController = TextEditingController();
   TextEditingController timeController = TextEditingController();
 
-  Section _lastRemoved;
-  int _lastRemovedPos;
+  late Section _lastRemoved;
+  late int _lastRemovedPos;
 
   List<Section> sequence = [];
 
@@ -97,12 +97,9 @@ class _EditState extends State<Edit> {
               ),
               child: Text("Salvar"),
               onPressed: () async {
-                String userEmail = await getUserEmail();
-                await WorkoutDB().post(
-                  userEmail,
-                  saveNameController.text,
-                  sequence.map((e) => e.toList()).toList(),
-                );
+                Map<String, int> workouts = Map();
+                sequence.forEach((element) => workouts.addAll(element.toMap()));
+                await WorkoutDB.post(saveNameController.text, workouts);
 
                 Navigator.pop(context); // Pop Dialog
               },
@@ -121,19 +118,19 @@ class _EditState extends State<Edit> {
   }
 
   Future _loadRAM() async {
-    List workout = await loadRAM();
-    setState(() {
-      sequence = workout
-          .map((pair) =>
-              createSection(pair.keys.first, pair.values.first.toString()))
-          .toList();
+    Map<String, int> workouts = await loadRAM();
+    sequence = [];
+    workouts.forEach((key, value) {
+      sequence.add(createSection(key, value.toString()));
     });
+
+    setState(() {});
   }
 
   Future _saveRAM() async {
-    RAM ram = await RAM().load();
-    await ram.editData(
-        "currentWorkout", sequence.map((e) => e.toMap()).toList());
+    Map<String, int> compiled = Map();
+    sequence.forEach((element) => compiled.addAll(element.toMap()));
+    await RAM.write("currentWorkout", jsonEncode(compiled));
   }
 
   // Widget Helpers
@@ -319,8 +316,9 @@ class _EditState extends State<Edit> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, "/workouttimer-saved");
+              onPressed: () async {
+                await Navigator.pushNamed(context, "/workouttimer-saved");
+                await _loadRAM();
               },
             ),
           ),
