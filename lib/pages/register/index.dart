@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/cryptography/cryptography.dart';
 import 'package:sql_treino/services/database/storage.dart';
-import 'package:sql_treino/shared/functions.dart';
+import 'package:sql_treino/shared/functions/emptyValidator.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/themes/theme.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';

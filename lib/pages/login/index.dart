@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:sql_treino/services/cryptography/cryptography.dart';
 import 'package:sql_treino/services/database/storage.dart';
 import 'package:sql_treino/services/local/RAM.dart';
-import 'package:sql_treino/shared/functions.dart';
+import 'package:sql_treino/shared/functions/emptyValidator.dart';
+import 'package:sql_treino/shared/functions/loadVars.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
 

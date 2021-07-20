@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
-import 'package:petitparser/petitparser.dart';
+import 'package:sql_treino/shared/functions/calculate.dart';
 
 class CalculadoraPage extends StatefulWidget {
   @override
@@ -11,6 +10,7 @@ class CalculadoraPage extends StatefulWidget {
 class _CalculadoraPageState extends State<CalculadoraPage> {
   String calculus = "";
   int maxScreenLength = 24;
+  double availableHeight = 0;
   String? varA, varB, varC, varD;
 
   void click(dynamic n) {
@@ -49,48 +49,10 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     });
   }
 
-  Parser buildParser() {
-    final builder = ExpressionBuilder();
-    builder.group()
-      ..primitive((pattern('+-').optional() &
-              digit().plus() &
-              (char(',') & digit().plus()).optional() &
-              (pattern('eE') & pattern('+-').optional() & digit().plus())
-                  .optional())
-          .flatten('number expected')
-          .trim()
-          .map(num.tryParse))
-      ..wrapper(
-          char('(').trim(), char(')').trim(), (left, value, right) => value);
-    builder.group().prefix(char('-').trim(), (op, num a) => -a);
-    builder
-        .group()
-        .right(char('^').trim(), (num a, op, num b) => math.pow(a, b));
-    builder.group()
-      ..left(char('X').trim(), (num a, op, num b) => a * b)
-      ..left(char('÷').trim(), (num a, op, num b) => a / b);
-    builder.group()
-      ..left(char('+').trim(), (num a, op, num b) => a + b)
-      ..left(char('-').trim(), (num a, op, num b) => a - b);
-    return builder.build().end();
-  }
-
-  String calc(String string) {
-    string = string.replaceAll('π', math.pi.toString());
-    string = string.replaceAll('e', math.e.toString());
-
-    final parser = buildParser();
-    final result = parser.parse(string);
-    if (result.isSuccess)
-      return result.value;
-    else
-      return result.message;
-  }
-
   void a() {
     setState(() {
       if (calculus != "") {
-        varA = calc(calculus);
+        varA = calculate(calculus);
       } else if (varA != "") {
         calculus = varA ?? "";
       }
@@ -100,7 +62,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   void b() {
     setState(() {
       if (calculus != "") {
-        varB = calc(calculus);
+        varB = calculate(calculus);
       } else if (varB != "") {
         calculus = varB ?? "";
       }
@@ -110,7 +72,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   void c() {
     setState(() {
       if (calculus != "") {
-        varC = calc(calculus);
+        varC = calculate(calculus);
       } else if (varC != "") {
         calculus = varC ?? "";
       }
@@ -120,7 +82,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   void d() {
     setState(() {
       if (calculus != "") {
-        varD = calc(calculus);
+        varD = calculate(calculus);
       } else if (varD != "") {
         calculus = varD ?? "";
       }
@@ -136,7 +98,11 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     }
     return Container(
       width: MediaQuery.of(context).size.width * width,
-      height: MediaQuery.of(context).size.height / 10,
+      height: availableHeight / 9,
+      decoration: BoxDecoration(
+        color: bg,
+        border: Border.all(),
+      ),
       child: ElevatedButton(
         child: Text(
           text,
@@ -161,24 +127,29 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       centerTitle: true,
       leading: BackButton(),
     );
+    setState(() {
+      availableHeight =
+          MediaQuery.of(context).size.height - appBar.preferredSize.height;
+    });
+
     return Scaffold(
       appBar: appBar,
       body: Column(
         children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3 -
-                appBar.preferredSize.height,
-            padding: EdgeInsets.all(10.0),
-            alignment: Alignment.center,
-            color: Colors.black,
-            child: Text(
-              calculus,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              style: TextStyle(
-                  fontSize: 50,
-                  color: Colors.white,
-                  fontStyle: FontStyle.normal),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(10.0),
+              alignment: Alignment.center,
+              color: Colors.black,
+              child: Text(
+                calculus,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: TextStyle(
+                    fontSize: 50,
+                    color: Colors.white,
+                    fontStyle: FontStyle.normal),
+              ),
             ),
           ),
           Row(
@@ -226,7 +197,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
               myContainer("0", width: 0.5),
               myContainer(",", bg: Colors.white54, callback: virgula),
               myContainer("=", bg: Colors.green, callback: () {
-                setState(() => calculus = calc(calculus));
+                setState(() => calculus = calculate(calculus));
               }),
             ],
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/local/RAM.dart';
-import 'package:sql_treino/shared/functions.dart';
+import 'package:sql_treino/shared/functions/loadVars.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/shared/functions.dart';
+import 'package:sql_treino/shared/functions/emptyValidator.dart';
 
 class IMCPage extends StatefulWidget {
   @override
