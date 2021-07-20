@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   
-  #Basics
+  # Basics
   cupertino_icons: ^1.0.3
   http: ^0.13.3
   
@@ -33,7 +33,7 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  path: "assets/icon.png"
+  image_path: "assets/icon.png"
 
 flutter:
   assets:
