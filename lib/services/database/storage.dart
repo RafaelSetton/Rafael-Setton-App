@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
+import 'package:sql_treino/shared/models/workoutModel.dart';
+import 'package:sql_treino/shared/models/workoutSetModel.dart';
 
 class UserDB {
   static CollectionReference get collection =>
@@ -25,7 +27,9 @@ class UserDB {
 
   static Future<UserModel?> show(String email) async {
     final document = await collection.doc(email).get();
-    return UserModel.fromMap(document.data() as Map<String, dynamic>);
+    return document.exists
+        ? UserModel.fromMap(document.data() as Map<String, dynamic>)
+        : null;
   }
 
   static Future delete(String email) async {
@@ -36,29 +40,27 @@ class UserDB {
 class WorkoutDB {
   static late String userEmail;
 
-  static CollectionReference get collection => FirebaseFirestore.instance
-      .collection("users")
-      .doc(userEmail)
-      .collection("workouts");
+  static Future<UserModel> get user async => (await UserDB.show(userEmail))!;
 
-  static Future post(String name, Map<String, int> data) async {
-    // data: {"name1": int, "name2": int}
-    await collection.doc(name).set(data);
+  static Future post(String name, List<WorkoutModel> data) async {
+    UserModel? user = await UserDB.show(userEmail);
+    if (user == null) return;
+    user.data.workouts[name] = WorkoutSetModel(workouts: data);
+    await UserDB.post(user);
   }
 
   static Future<List<String>> list() async {
     // ["name1", "name2", "name3"]
-    final response = await collection.get();
-    return response.docs.map((e) => e.id).toList();
+    return (await user).data.workouts.keys.toList();
   }
 
-  static Future<Map<String, int>> show(String name) async {
-    // {"name1": int, "name2": int}
-    final response = await collection.doc(name).get();
-    return Map<String, int>.from(response.data() as Map);
+  static Future<List<WorkoutModel>> show(String name) async {
+    final response = await UserDB.show(userEmail);
+    return response!.data.workouts[name]!.workouts;
   }
 
   static Future delete(String name) async {
-    await collection.doc(name).delete();
+    final userData = await user;
+    userData.data.workouts.remove(name);
   }
 }

@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
+import 'package:sql_treino/shared/models/userDataModel.dart';
 
 class UserModel {
   final String name;
   final String email;
   final String password;
   final String birthday;
-  final Map data;
+  final UserDataModel data;
   UserModel({
     required this.name,
     required this.email,
@@ -21,7 +21,7 @@ class UserModel {
     String? email,
     String? password,
     String? birthday,
-    Map? data,
+    UserDataModel? data,
   }) {
     return UserModel(
       name: name ?? this.name,
@@ -38,7 +38,7 @@ class UserModel {
       'email': email,
       'password': password,
       'birthday': birthday,
-      'data': data,
+      'data': data.toMap(),
     };
   }
 
@@ -48,7 +48,7 @@ class UserModel {
       email: map['email'],
       password: map['password'],
       birthday: map['birthday'],
-      data: Map.from(map['data']),
+      data: UserDataModel.fromMap(map['data']),
     );
   }
 
@@ -71,7 +71,7 @@ class UserModel {
         other.email == email &&
         other.password == password &&
         other.birthday == birthday &&
-        mapEquals(other.data, data);
+        other.data == data;
   }
 
   @override

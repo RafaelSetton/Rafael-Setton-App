@@ -101,8 +101,8 @@ class _ColorGamePageState extends State<ColorGamePage> {
 
         String email = (await RAM.read("user"))!;
         UserModel user = (await UserDB.show(email))!;
-        if (results > user.data["colorgamepts"]) {
-          user.data["colorgamepts"] = results;
+        if (results > user.data.colorGamePts) {
+          user.data.colorGamePts = results;
           await UserDB.post(user);
         }
       }

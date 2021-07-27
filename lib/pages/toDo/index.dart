@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/database/storage.dart';
+import 'package:sql_treino/shared/models/ToDoModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 
 class ToDoPage extends StatefulWidget {
@@ -12,9 +13,9 @@ class ToDoPage extends StatefulWidget {
 }
 
 class _ToDoPageState extends State<ToDoPage> {
-  List _toDoList = [];
+  List<ToDoModel> _toDoList = [];
   TextEditingController textController = TextEditingController();
-  late Map<String, dynamic> _lastRemoved;
+  late ToDoModel _lastRemoved;
   late int _lastRemovedPos;
 
   @override
@@ -29,13 +30,13 @@ class _ToDoPageState extends State<ToDoPage> {
 
   Future _saveData() async {
     UserModel user = (await UserDB.show(widget.userEmail))!;
-    user.data["todos"] = _toDoList;
+    user.data.todos = _toDoList;
     await UserDB.post(user);
   }
 
-  Future<List> _readData() async {
+  Future<List<ToDoModel>> _readData() async {
     try {
-      return (await UserDB.show(widget.userEmail))!.data["todos"];
+      return (await UserDB.show(widget.userEmail))!.data.todos;
     } catch (err) {
       return [];
     }
@@ -45,9 +46,7 @@ class _ToDoPageState extends State<ToDoPage> {
     if (textController.text == "") {
       return;
     }
-    Map<String, dynamic> newToDo = Map();
-    newToDo['title'] = textController.text;
-    newToDo['ok'] = false;
+    ToDoModel newToDo = ToDoModel(title: textController.text, ok: false);
     setState(() {
       textController.text = "";
       _toDoList.add(newToDo);
@@ -58,7 +57,7 @@ class _ToDoPageState extends State<ToDoPage> {
   Future _sortToDo() async {
     await Future.delayed(Duration(milliseconds: 500));
     setState(() {
-      _toDoList.sort((a, b) => a['ok'] ? 1 : -1);
+      _toDoList.sort((a, b) => a.ok ? 1 : -1);
     });
   }
 
@@ -77,13 +76,13 @@ class _ToDoPageState extends State<ToDoPage> {
       key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
       onDismissed: (direction) {
         setState(() {
-          _lastRemoved = Map.from(_toDoList[index]);
+          _lastRemoved = _toDoList[index];
           _lastRemovedPos = index;
           _toDoList.removeAt(index);
           _saveData();
         });
         final snack = SnackBar(
-          content: Text("Tarefa \"${_lastRemoved['title']}\" excluída!"),
+          content: Text("Tarefa \"${_lastRemoved.title}\" excluída!"),
           action: SnackBarAction(
             label: "Desfazer",
             onPressed: () {
@@ -101,14 +100,14 @@ class _ToDoPageState extends State<ToDoPage> {
       child: CheckboxListTile(
         onChanged: (value) {
           setState(() {
-            _toDoList[index]['ok'] = value;
+            _toDoList[index].ok = value ?? _toDoList[index].ok;
             _saveData();
           });
         },
-        value: _toDoList[index]['ok'],
-        title: Text(_toDoList[index]['title']),
+        value: _toDoList[index].ok,
+        title: Text(_toDoList[index].title),
         secondary: CircleAvatar(
-          child: Icon(_toDoList[index]['ok'] ? Icons.check : Icons.error),
+          child: Icon(_toDoList[index].ok ? Icons.check : Icons.error),
         ),
       ),
     );

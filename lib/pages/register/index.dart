@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sql_treino/services/cryptography/cryptography.dart';
 import 'package:sql_treino/services/database/storage.dart';
 import 'package:sql_treino/shared/functions/emptyValidator.dart';
+import 'package:sql_treino/shared/models/userDataModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/themes/theme.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
@@ -84,7 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
       email: _email.text.trim(),
       password: Cryptography.encrypt(_password.text),
       birthday: "${_birthday.day}/${_birthday.month}/${_birthday.year}",
-      data: {"todos": [], "colorgamepts": 0},
+      data: UserDataModel(colorGamePts: 0, todos: [], workouts: {}),
     );
     String err = await UserDB.post(user, create: true);
     switch (err) {

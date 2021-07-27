@@ -4,7 +4,7 @@ import 'package:sql_treino/services/database/storage.dart';
 import 'package:sql_treino/services/local/RAM.dart';
 
 Future loadVars() async {
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
   RAM.prefs = await SharedPreferences.getInstance();
   WorkoutDB.userEmail = await RAM.read("user") ?? "";
 }

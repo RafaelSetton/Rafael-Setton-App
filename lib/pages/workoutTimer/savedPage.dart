@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/database/storage.dart';
 import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class Saved extends StatefulWidget {
   @override
@@ -12,14 +13,15 @@ class Saved extends StatefulWidget {
 class _SavedState extends State<Saved> {
   late List data;
   late String _lastRemovedName;
-  late Map<String, int> _lastRemovedValue;
+  late List<WorkoutModel> _lastRemovedValue;
   late int _lastRemovedPos;
 
   Future choose(int index) async {
     String name = data[index];
-    Map<String, int> workout = await WorkoutDB.show(name);
+    List<WorkoutModel> workout = await WorkoutDB.show(name);
 
-    await RAM.write("currentWorkout", jsonEncode(workout));
+    await RAM.write(
+        "currentWorkout", jsonEncode(workout.map((e) => e.toMap()).toList()));
     Navigator.pop(context);
   }
 

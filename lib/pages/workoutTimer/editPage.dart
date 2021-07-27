@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:sql_treino/pages/workoutTimer/selectionDialog.dart';
 import 'package:sql_treino/pages/workoutTimer/shared.dart';
 import 'package:sql_treino/services/database/storage.dart';
 import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class Edit extends StatefulWidget {
   @override
@@ -97,8 +99,14 @@ class _EditState extends State<Edit> {
               ),
               child: Text("Salvar"),
               onPressed: () async {
-                Map<String, int> workouts = Map();
-                sequence.forEach((element) => workouts.addAll(element.toMap()));
+                List<WorkoutModel> workouts = sequence
+                    .map(
+                      (element) => WorkoutModel(
+                        title: element.name.text,
+                        duration: int.parse(element.time.text),
+                      ),
+                    )
+                    .toList();
                 await WorkoutDB.post(saveNameController.text, workouts);
 
                 Navigator.pop(context); // Pop Dialog
@@ -118,18 +126,21 @@ class _EditState extends State<Edit> {
   }
 
   Future _loadRAM() async {
-    Map<String, int> workouts = await loadRAM();
-    sequence = [];
-    workouts.forEach((key, value) {
-      sequence.add(createSection(key, value.toString()));
-    });
+    List<WorkoutModel> workouts = await loadRAM();
+    sequence = workouts
+        .map((e) => createSection(e.title, e.duration.toString()))
+        .toList();
 
     setState(() {});
   }
 
   Future _saveRAM() async {
-    Map<String, int> compiled = Map();
-    sequence.forEach((element) => compiled.addAll(element.toMap()));
+    List<Map> compiled = sequence
+        .map((element) => {
+              "title": element.name.text,
+              "duration": int.parse(element.time.text),
+            })
+        .toList();
     await RAM.write("currentWorkout", jsonEncode(compiled));
   }
 
@@ -291,15 +302,16 @@ class _EditState extends State<Edit> {
                   fontSize: 25,
                 ),
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, "/workouttimer-run");
+              onPressed: () async {
+                await showDialog(
+                    context: context, builder: (_) => SelectionDialog());
               },
             ),
           ),
         ],
       ),
       bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
             padding: EdgeInsets.all(15),

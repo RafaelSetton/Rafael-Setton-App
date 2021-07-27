@@ -3,6 +3,7 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:sql_treino/pages/workoutTimer/shared.dart';
+import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class Run extends StatefulWidget {
   @override
@@ -19,7 +20,7 @@ class _RunState extends State<Run> {
   bool announced = false;
   int ready = 0;
 
-  Map<String, int> sequence = Map();
+  List<WorkoutModel> sequence = [];
   CountDownController timeController = CountDownController();
 
   @override
@@ -27,8 +28,8 @@ class _RunState extends State<Run> {
     super.initState();
     Timer(Duration(milliseconds: 1), () async {
       await _loadRAM();
-      String thisName = sequence.keys.first;
-      int thisTime = sequence[thisName]!;
+      String thisName = sequence.first.title;
+      int thisTime = sequence.first.duration;
       textToSpeech.speak(
           "Vamos começar. Primeiro exercício: $thisName, $thisTime segundos");
       textToSpeech.setCompletionHandler(() {
@@ -59,8 +60,8 @@ class _RunState extends State<Run> {
 
   void announceNext() {
     try {
-      String nextName = sequence.keys.elementAt(1);
-      int nextTime = sequence[nextName]!;
+      String nextName = sequence[1].title;
+      int nextTime = sequence[1].duration;
       textToSpeech.speak("Próximo exercício: $nextName, $nextTime segundos");
     } on RangeError {
       textToSpeech.speak("Finalizando treino");
@@ -93,7 +94,7 @@ class _RunState extends State<Run> {
 
   Widget circleTimer() {
     return CircularCountDownTimer(
-      duration: sequence.values.first,
+      duration: sequence.first.duration,
       controller: timeController,
       width: MediaQuery.of(context).size.width / 2,
       height: MediaQuery.of(context).size.height / 2,
@@ -111,7 +112,7 @@ class _RunState extends State<Run> {
       autoStart: true,
       onStart: () {
         print('Countdown Started');
-        textToSpeech.speak(sequence.keys.first);
+        textToSpeech.speak(sequence.first.title);
 
         speakControlTimer =
             Timer.periodic(Duration(milliseconds: 200), periodicTimeHandler);
@@ -123,8 +124,8 @@ class _RunState extends State<Run> {
           spoken = [];
           announced = false;
           if (sequence.length > 1) {
-            sequence.remove(sequence.keys.first);
-            timeController.restart(duration: sequence.values.first);
+            sequence.removeAt(0);
+            timeController.restart(duration: sequence.first.duration);
           } else {
             timeController.pause();
             () async {
@@ -201,7 +202,7 @@ class _RunState extends State<Run> {
               Container(
                 padding: EdgeInsets.all(15),
                 child: Text(
-                  sequence.length > 0 ? sequence.keys.first : "",
+                  sequence.length > 0 ? sequence.first.title : "",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,

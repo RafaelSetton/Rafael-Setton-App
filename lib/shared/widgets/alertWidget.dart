@@ -5,12 +5,15 @@ const List<Widget> _emptyList = [];
 Future<void> alert(BuildContext context, String title, String text,
     {List<Widget> actions = _emptyList, bool okButton: true}) async {
   if (okButton) {
-    actions.add(TextButton(
-      child: Text('OK'),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    ));
+    actions = actions +
+        [
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )
+        ];
   }
   return showDialog<void>(
     context: context,

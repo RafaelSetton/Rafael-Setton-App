@@ -1,37 +1,38 @@
-# sql_treino
+# Rafael Setton - MyFlutterProject
 
-Projeto dedicado ao estudo de Banco de Dados.
 
-Acabei salvando as informações em arquivos JSON.
-```
-Últimas atualizações:
-    - Permissão de acesso à internet
-    - Layout Conversor de Moedas
-    - Recarregar na página de Login
-    - Alteração na forma de armazenamento
-```
+## Instruções de uso
 
-```
-Páginas:
-    - Cadastro
-    - Log-in
-    - Página de Usuário
-    - Calculadora
-    - Cálculo de IMC
-    - Color Game
-    - Conversor de Moedas
-    - TO DOs list
+```bash
+~$ git clone https://github.com/RafaelSetton/My-Flutter-Project.git
+~$ cd My-Flutter-Project
+~/My-Flutter-Project$ flutter pub get
+~/My-Flutter-Project$ flutter build apk
 ```
 
-## Getting Started
+Baixe e Instale `~/My-Flutter-Project/build/app/outputs/flutter-apk/app-release.apk` no seu dispositivo android.
 
-This project is a starting point for a Flutter application.
+----------
+## Informações
 
-A few resources to get you started if this is your first Flutter project:
+Últimas atualizações:<br/>
+- Permissão de acesso à internet<br/>
+- Layout Conversor de Moedas<br/>
+- Recarregar na página de Login<br/>
+- Alteração na forma de armazenamento<br/>
+- Update em WorkoutTimer<br/>
+    > [WorkoutModel](./lib/shared/models/workoutModel.dart)<br/>
+    > [SelectionDialog](./lib/pages/workoutTimer/selectionDialog.dart)<br/>
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Páginas:<br/>
+- [Splash](./lib/pages/splash)<br/>
+- [Cadastro](./lib/pages/register)<br/>
+- [Log-in](./lib/pages/login)<br/>
+- [Página de Usuário](./lib/pages/home)<br/>
+- [Calculadora](./lib/pages/calculadora)<br/>
+- [Cálculo de IMC](./lib/pages/IMC)<br/>
+- [Color Game](./lib/pages/colorGame)<br/>
+- [Conversor de Moedas](./lib/pages/conversor)<br/>
+- [TO DOs list](./lib/pages/toDo)<br/>
+- [Workout Timer](./lib/pages/workoutTimer)<br/>

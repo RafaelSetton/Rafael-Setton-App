@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class Section {
   TextEditingController name;
@@ -26,7 +27,10 @@ class Section {
   }
 }
 
-Future<Map<String, int>> loadRAM() async {
-  dynamic read = (await RAM.read('currentWorkout'));
-  return Map<String, int>.from(jsonDecode(read ?? "{}"));
+Future<List<WorkoutModel>> loadRAM() async {
+  String? read = await RAM.read('currentWorkout');
+  if (read == null) return [];
+  List<Map<String, dynamic>> maps =
+      List<Map<String, dynamic>>.from(jsonDecode(read));
+  return maps.map((e) => WorkoutModel.fromMap(e)).toList();
 }

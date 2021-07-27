@@ -13,6 +13,20 @@ class _SplashPageState extends State<SplashPage> {
   Future authorize(BuildContext context) async {
     await Future.delayed(Duration(milliseconds: 100));
     await loadVars();
+
+    /*final col = await UserDB.collection.get();
+    for (var doc in col.docs) {
+      String id = doc.id;
+      var document = await UserDB.collection.doc(id).get();
+      Map<String, dynamic> user = document.data()! as Map<String, dynamic>;
+
+      // Modify
+      
+      // End modifications
+
+      UserDB.collection.doc(id).set(user);
+    }*/
+
     String? email = await RAM.read("user");
     if (email != null)
       Navigator.pushReplacementNamed(context, "/userpage", arguments: email);
