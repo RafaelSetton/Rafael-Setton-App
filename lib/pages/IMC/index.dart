@@ -40,7 +40,6 @@ class _IMCPageState extends State<IMCPage> {
       } else {
         _infoText = "Obesidade Grau III";
       }
-      debugPrint("$imc");
       _infoText += " (${imc.toStringAsPrecision(3)})";
     });
   }

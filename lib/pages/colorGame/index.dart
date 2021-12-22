@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sql_treino/services/database/storage.dart';
 import 'dart:async';
 
-import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/shared/functions/getArguments.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 
 class ColorGamePage extends StatefulWidget {
@@ -35,6 +35,18 @@ class _ColorGamePageState extends State<ColorGamePage> {
   int results = 0;
   double barHeight = 0;
   late Timer timer;
+  int hs = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 10), () {
+      String email = getArguments(context)!.userEmail;
+      UserDB.show(email).then((user) => setState(() {
+            hs = user!.data.colorGamePts;
+          }));
+    });
+  }
 
   void newText() {
     setState(() {
@@ -60,23 +72,6 @@ class _ColorGamePageState extends State<ColorGamePage> {
     newText();
   }
 
-  Container colorButton(color) {
-    return Container(
-        width: MediaQuery.of(context).size.width / 3 - 10,
-        height: 100,
-        padding: EdgeInsets.all(5),
-        color: Colors.black,
-        child: ElevatedButton(
-          onPressed: () {
-            click(color);
-          },
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(color),
-          ),
-          child: Container(),
-        ));
-  }
-
   void startTimer(double height) {
     setState(() {
       barHeight = height;
@@ -98,17 +93,56 @@ class _ColorGamePageState extends State<ColorGamePage> {
           text = "Pressione Restart";
           color = Colors.grey;
         });
-
-        String email = (await RAM.read("user"))!;
-        UserModel user = (await UserDB.show(email))!;
-        if (results > user.data.colorGamePts) {
+        if (results > hs) {
+          String email = getArguments(context)!.userEmail;
+          UserModel user = (await UserDB.show(email))!;
           user.data.colorGamePts = results;
+          hs = results;
           await UserDB.post(user);
         }
       }
     }
 
     timer = Timer.periodic(Duration(milliseconds: 30), periodic);
+  }
+
+  Container colorButton(color) {
+    return Container(
+        width: MediaQuery.of(context).size.width / 3 - 10,
+        height: 100,
+        padding: EdgeInsets.all(5),
+        color: Colors.black,
+        child: ElevatedButton(
+          onPressed: () {
+            if (barHeight > 0) click(color);
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(color),
+          ),
+          child: Container(),
+        ));
+  }
+
+  Container resetButton() {
+    return Container(
+      alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width / 3 - 10,
+      child: IconButton(
+        alignment: Alignment.center,
+        icon: Icon(
+          Icons.restore,
+          color: Colors.grey,
+        ),
+        iconSize: 50,
+        onPressed: () {
+          startTimer(MediaQuery.of(context).size.height);
+          newText();
+          setState(() {
+            results = 0;
+          });
+        },
+      ),
+    );
   }
 
   @override
@@ -161,18 +195,26 @@ class _ColorGamePageState extends State<ColorGamePage> {
                 ),
                 Column(
                   children: <Widget>[
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "High Score: $hs",
+                        style: TextStyle(color: Colors.grey, fontSize: 35),
+                      ),
+                      padding: EdgeInsets.only(bottom: 10),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              results.toString() + ' pts',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 35),
-                            ),
-                            width: MediaQuery.of(context).size.width / 3 - 10,
-                            color: Colors.black),
+                          alignment: Alignment.center,
+                          child: Text(
+                            results.toString() + ' pts',
+                            style: TextStyle(color: Colors.grey, fontSize: 35),
+                          ),
+                          width: MediaQuery.of(context).size.width / 3 - 10,
+                          color: Colors.black,
+                        ),
                         colorButton(Colors.red),
                         colorButton(Colors.orange),
                       ],
@@ -189,25 +231,7 @@ class _ColorGamePageState extends State<ColorGamePage> {
                       children: <Widget>[
                         colorButton(Colors.blue),
                         colorButton(Colors.green),
-                        Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width / 3 - 10,
-                          child: IconButton(
-                            alignment: Alignment.center,
-                            icon: Icon(
-                              Icons.restore,
-                              color: Colors.grey,
-                            ),
-                            iconSize: 50,
-                            onPressed: () {
-                              startTimer(MediaQuery.of(context).size.height);
-                              newText();
-                              setState(() {
-                                results = 0;
-                              });
-                            },
-                          ),
-                        ),
+                        resetButton(),
                       ],
                     ),
                   ],
