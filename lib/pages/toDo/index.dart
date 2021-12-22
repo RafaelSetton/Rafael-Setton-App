@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/database/storage.dart';
+import 'package:sql_treino/shared/functions/getArguments.dart';
 import 'package:sql_treino/shared/models/ToDoModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 
 class ToDoPage extends StatefulWidget {
-  final String userEmail;
-
-  const ToDoPage({Key? key, required this.userEmail}) : super(key: key);
+  const ToDoPage({Key? key}) : super(key: key);
 
   @override
   _ToDoPageState createState() => _ToDoPageState();
@@ -29,14 +28,14 @@ class _ToDoPageState extends State<ToDoPage> {
   }
 
   Future _saveData() async {
-    UserModel user = (await UserDB.show(widget.userEmail))!;
+    UserModel user = (await UserDB.show(getArguments(context)!.userEmail))!;
     user.data.todos = _toDoList;
     await UserDB.post(user);
   }
 
   Future<List<ToDoModel>> _readData() async {
     try {
-      return (await UserDB.show(widget.userEmail))!.data.todos;
+      return (await UserDB.show(getArguments(context)!.userEmail))!.data.todos;
     } catch (err) {
       return [];
     }

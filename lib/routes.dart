@@ -10,22 +10,22 @@ import 'package:sql_treino/pages/conversor/index.dart';
 import 'package:sql_treino/pages/splash/index.dart';
 import 'package:sql_treino/pages/toDo/index.dart';
 import 'package:sql_treino/pages/workoutTimer/index.dart' as WorkoutTimer;
-
-Object? _getArguments(BuildContext context) =>
-    ModalRoute.of(context)!.settings.arguments;
+import 'package:sql_treino/pages/chatApp/index.dart' as ChatApp;
 
 final Map<String, WidgetBuilder> routes = {
   "/splash": (context) => SplashPage(),
   "/login": (context) => LoginPage(),
   "/register": (context) => RegisterPage(),
-  "/userpage": (context) => HomePage(email: _getArguments(context) as String),
+  "/userpage": (context) => HomePage(),
   "/calculator": (context) => CalculadoraPage(),
   "/calculodeimc": (context) => IMCPage(),
   "/colorgame": (context) => ColorGamePage(),
   "/conversordemoedas": (context) => ConversorPage(),
-  "/todolist": (context) =>
-      ToDoPage(userEmail: _getArguments(context) as String),
+  "/todolist": (context) => ToDoPage(),
   "/workouttimer-run": (context) => WorkoutTimer.Run(),
   "/workouttimer-saved": (context) => WorkoutTimer.Saved(),
   "/workouttimer-edit": (context) => WorkoutTimer.Edit(),
+  "/chatlist": (context) => ChatApp.ListChatsPage(),
+  "/chat": (context) => ChatApp.ChatPage(),
+  "/newchat": (context) => ChatApp.NewChatPage(),
 };

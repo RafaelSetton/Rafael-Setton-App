@@ -61,7 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Container(
       height: 200,
       child: CupertinoDatePicker(
-        backgroundColor: AppTheme.backGround,
+        backgroundColor: AppTheme.background,
         mode: CupertinoDatePickerMode.date,
         initialDateTime: _birthday,
         onDateTimeChanged: (DateTime date) {
@@ -85,7 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
       email: _email.text.trim(),
       password: Cryptography.encrypt(_password.text),
       birthday: "${_birthday.day}/${_birthday.month}/${_birthday.year}",
-      data: UserDataModel(colorGamePts: 0, todos: [], workouts: {}),
+      data: UserDataModel(colorGamePts: 0, todos: [], workouts: {}, chats: []),
     );
     String err = await UserDB.post(user, create: true);
     switch (err) {

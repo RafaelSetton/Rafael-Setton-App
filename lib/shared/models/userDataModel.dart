@@ -8,21 +8,26 @@ class UserDataModel {
   int colorGamePts;
   List<ToDoModel> todos;
   Map<String, WorkoutSetModel> workouts;
+  List<String> chats;
+
   UserDataModel({
     required this.colorGamePts,
     required this.todos,
     required this.workouts,
+    required this.chats,
   });
 
   UserDataModel copyWith({
     int? colorGamePts,
     List<ToDoModel>? todos,
     Map<String, WorkoutSetModel>? workouts,
+    List<String>? chats,
   }) {
     return UserDataModel(
       colorGamePts: colorGamePts ?? this.colorGamePts,
       todos: todos ?? this.todos,
       workouts: workouts ?? this.workouts,
+      chats: chats ?? this.chats,
     );
   }
 
@@ -32,6 +37,7 @@ class UserDataModel {
       'todos': todos.map((x) => x.toMap()).toList(),
       'workouts':
           workouts.map((key, value) => MapEntry(key, value.toMapList())),
+      'chats': chats,
     };
   }
 
@@ -45,6 +51,7 @@ class UserDataModel {
               key,
               WorkoutSetModel.fromMapList(
                   List<Map<String, dynamic>>.from(value)))),
+      chats: List<String>.from(map['chats']),
     );
   }
 
@@ -55,7 +62,7 @@ class UserDataModel {
 
   @override
   String toString() =>
-      'UserDataModel(colorGamePts: $colorGamePts, todos: $todos, workouts: $workouts)';
+      'UserDataModel(colorGamePts: $colorGamePts, todos: $todos, workouts: $workouts, chats: $chats)';
 
   @override
   bool operator ==(Object other) {
@@ -65,10 +72,14 @@ class UserDataModel {
     return other is UserDataModel &&
         other.colorGamePts == colorGamePts &&
         collectionEquals(other.todos, todos) &&
-        collectionEquals(other.workouts, workouts);
+        collectionEquals(other.workouts, workouts) &&
+        collectionEquals(other.chats, chats);
   }
 
   @override
   int get hashCode =>
-      colorGamePts.hashCode ^ todos.hashCode ^ workouts.hashCode;
+      colorGamePts.hashCode ^
+      todos.hashCode ^
+      workouts.hashCode ^
+      chats.hashCode;
 }

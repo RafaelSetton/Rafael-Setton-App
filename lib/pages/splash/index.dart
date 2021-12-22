@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/local/RAM.dart';
 import 'package:sql_treino/shared/functions/loadVars.dart';
+import 'package:sql_treino/shared/models/argumentsModel.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -11,8 +11,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   Future authorize(BuildContext context) async {
-    await Future.delayed(Duration(milliseconds: 100));
-    await loadVars();
+    ArgumentsModel args = await loadVars();
 
     /*final col = await UserDB.collection.get();
     for (var doc in col.docs) {
@@ -24,14 +23,12 @@ class _SplashPageState extends State<SplashPage> {
       
       // End modifications
 
-      UserDB.collection.doc(id).set(user);
+      await UserDB.collection.doc(id).set(user);
     }*/
 
-    String? email = await RAM.read("user");
-    if (email != null)
-      Navigator.pushReplacementNamed(context, "/userpage", arguments: email);
-    else
-      Navigator.pushReplacementNamed(context, "/login");
+    String route = args.userEmail.isNotEmpty ? "/userpage" : "/login";
+
+    Navigator.pushReplacementNamed(context, route, arguments: args);
   }
 
   @override

@@ -27,8 +27,8 @@ class Section {
   }
 }
 
-Future<List<WorkoutModel>> loadRAM() async {
-  String? read = await RAM.read('currentWorkout');
+Future<List<WorkoutModel>> readWorkout(String name) async {
+  String? read = await RAM.read(name);
   if (read == null) return [];
   List<Map<String, dynamic>> maps =
       List<Map<String, dynamic>>.from(jsonDecode(read));

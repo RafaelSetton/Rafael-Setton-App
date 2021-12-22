@@ -50,7 +50,7 @@ class _RunState extends State<Run> {
   // Handle DB connections
 
   Future _loadRAM() async {
-    sequence = await loadRAM();
+    sequence = await readWorkout('runningWorkout');
     setState(() {
       ready++;
     });
@@ -111,15 +111,12 @@ class _RunState extends State<Run> {
       isTimerTextShown: true,
       autoStart: true,
       onStart: () {
-        print('Countdown Started');
         textToSpeech.speak(sequence.first.title);
 
         speakControlTimer =
             Timer.periodic(Duration(milliseconds: 200), periodicTimeHandler);
       },
       onComplete: () {
-        print('Countdown Finished');
-
         setState(() {
           spoken = [];
           announced = false;

@@ -1,6 +1,7 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:sql_treino/shared/functions/calculate.dart';
+import 'package:function_tree/function_tree.dart';
 
 class CalculadoraPage extends StatefulWidget {
   @override
@@ -13,12 +14,27 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   double availableHeight = 0;
   String? varA, varB, varC, varD;
 
+  String calculate(String string) {
+    string = string
+        .replaceAll('π', pi.toString())
+        .replaceAll('e', e.toString())
+        .replaceAll('÷', '/')
+        .replaceAll('X', '*')
+        .replaceAll(',', '.');
+    try {
+      return string.interpret().toString().replaceAll('.', ',');
+    } catch (e) {
+      return "Syntax Error";
+    }
+  }
+
   void click(dynamic n) {
     setState(() {
       String x = n.toString();
       if (calculus.length < maxScreenLength) calculus += x;
 
-      while (calculus.startsWith('0') && calculus.length != 1) {
+      RegExp regex = RegExp("0[^,]+");
+      while (regex.hasMatch(calculus)) {
         calculus = calculus.substring(1);
       }
     });

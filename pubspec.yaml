@@ -9,14 +9,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
+
   # Basics
   cupertino_icons: ^1.0.3
   http: ^0.13.3
-  
+
   # Firebase
   firebase_core: ^1.4.0
   cloud_firestore: ^2.4.0
+  firebase_storage: ^10.0.1
+  image_picker: ^0.8.2
 
   # Local Storage
   shared_preferences: ^2.0.6
@@ -27,6 +29,9 @@ dependencies:
 
   # Calculadora
   function_tree: ^0.8.12
+
+  # ChatApp
+  flutter_typeahead: ^3.2.1
 
 dev_dependencies:
   flutter_test:

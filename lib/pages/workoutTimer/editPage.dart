@@ -126,7 +126,7 @@ class _EditState extends State<Edit> {
   }
 
   Future _loadRAM() async {
-    List<WorkoutModel> workouts = await loadRAM();
+    List<WorkoutModel> workouts = await readWorkout('currentWorkout');
     sequence = workouts
         .map((e) => createSection(e.title, e.duration.toString()))
         .toList();

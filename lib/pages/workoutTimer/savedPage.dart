@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/database/storage.dart';
 import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/shared/functions/buildFuture.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class Saved extends StatefulWidget {
@@ -143,35 +144,13 @@ class _SavedState extends State<Saved> {
     );
   }
 
-  Widget builder(BuildContext context, AsyncSnapshot snapshot) {
-    switch (snapshot.connectionState) {
-      case ConnectionState.none:
-      case ConnectionState.waiting:
-        return loadScreen();
-      default:
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              "Erro ao Carregar Dados :(",
-              style: TextStyle(
-                color: Colors.amber,
-                fontSize: 25,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          );
-        } else {
-          this.data = snapshot.data;
-          return mainBody();
-        }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: WorkoutDB.list(),
-      builder: builder,
+      future: () async {
+        data = await WorkoutDB.list();
+      }(),
+      builder: buildFuture(mainBody),
     );
   }
 }

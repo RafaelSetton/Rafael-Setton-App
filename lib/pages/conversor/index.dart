@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:sql_treino/shared/functions/buildFuture.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -51,61 +52,32 @@ class _ConversorPageState extends State<ConversorPage> {
     }
   }
 
-  Widget bodyBuilder(context, snapshot) {
-    switch (snapshot.connectionState) {
-      case ConnectionState.none:
-      case ConnectionState.waiting:
-        return Center(
-          child: Text(
-            "Carregando Dados...",
-            style: TextStyle(
-              color: Colors.amber,
-              fontSize: 25,
-            ),
-            textAlign: TextAlign.center,
+  Widget bodyBuilder() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Icon(
+            Icons.monetization_on,
+            size: 150,
+            color: Colors.amber,
           ),
-        );
-      default:
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              "Erro ao Carregar Dados :(",
-              style: TextStyle(
-                color: Colors.amber,
-                fontSize: 25,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          );
-        } else {
-          dolar = double.parse(snapshot.data["USD"]["high"]);
-          euro = double.parse(snapshot.data["EUR"]["high"]);
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Icon(
-                  Icons.monetization_on,
-                  size: 150,
-                  color: Colors.amber,
-                ),
-                buildTextField("Reais", "R\$ ", reaisController, _realChange),
-                Divider(height: 10),
-                buildTextField(
-                    "Dólares", "US\$ ", dolaresController, _dolarChange),
-                Divider(height: 10),
-                buildTextField("Euros", "€ ", eurosController, _euroChange),
-              ],
-            ),
-          );
-        }
-    }
+          buildTextField("Reais", "R\$ ", reaisController, _realChange),
+          Divider(height: 10),
+          buildTextField("Dólares", "US\$ ", dolaresController, _dolarChange),
+          Divider(height: 10),
+          buildTextField("Euros", "€ ", eurosController, _euroChange),
+        ],
+      ),
+    );
   }
 
-  Future<Map> getData() async {
+  Future getData() async {
     http.Response response = await http.get(Uri.parse(request));
-    return json.decode(response.body);
+    Map data = json.decode(response.body);
+    dolar = double.parse(data["USD"]["high"]);
+    euro = double.parse(data["EUR"]["high"]);
   }
 
   TextField buildTextField(String label, String prefix,
@@ -153,7 +125,7 @@ class _ConversorPageState extends State<ConversorPage> {
         ),
         body: FutureBuilder(
           future: getData(),
-          builder: bodyBuilder,
+          builder: buildFuture(bodyBuilder),
         ),
       ),
     );

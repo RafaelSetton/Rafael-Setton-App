@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/shared/functions/getArguments.dart';
+import 'package:sql_treino/shared/themes/theme.dart';
 
 class HomePage extends StatefulWidget {
-  final String email;
-
-  const HomePage({Key? key, required this.email}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -19,23 +19,20 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: <Widget>[
             Text(
-              "Você está logado como\n'${widget.email}'",
+              "Você está logado como\n'${getArguments(context)!.userEmail}'",
               style: TextStyle(
                 fontSize: 20,
                 height: 2,
               ),
               textAlign: TextAlign.center,
             ),
-            button("Calculadora", Colors.green, Colors.lightBlue.shade100,
-                "calculator"),
-            button("Cálculo de IMC", Colors.grey.shade50, Colors.green,
-                "calculodeimc"),
-            button("Color Game", Colors.purple, Colors.grey, "colorgame"),
-            button("Conversor de Moedas", Colors.black, Colors.amberAccent,
-                "conversordemoedas"),
-            button("Todo List", Colors.grey.shade50, Colors.blue, "todolist"),
-            button("Workout Timer", Colors.purple.shade50, Colors.red,
-                "workouttimer-edit"),
+            button("Calculadora", "calculator"),
+            button("Cálculo de IMC", "calculodeimc"),
+            button("Color Game", "colorgame"),
+            button("Conversor de Moedas", "conversordemoedas"),
+            button("Todo List", "todolist"),
+            button("Workout Timer", "workouttimer-edit"),
+            button("Chat App", "chatlist"),
           ],
         ),
       ),
@@ -47,21 +44,20 @@ class _HomePageState extends State<HomePage> {
     Navigator.pushReplacementNamed(context, "/login");
   }
 
-  Widget button(
-      String text, Color textColor, Color background, String routeName) {
+  Widget button(String text, String routeName) {
     return Container(
       width: 200,
       margin: EdgeInsets.all(10),
       child: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(background),
+          backgroundColor: MaterialStateProperty.all(AppTheme.primary),
         ),
         child: Text(
           text,
-          style: TextStyle(color: textColor),
+          style: TextStyle(color: AppTheme.textOnPrimary),
         ),
         onPressed: () => Navigator.pushNamed(context, "/$routeName",
-            arguments: widget.email),
+            arguments: getArguments(context)),
       ),
     );
   }

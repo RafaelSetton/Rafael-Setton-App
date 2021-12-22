@@ -54,11 +54,12 @@ class _SelectionDialogState extends State<SelectionDialog> {
 
     // Multiplica
     for (int i = 1; i < (int.tryParse(seriesCountController.text) ?? 0); i++)
-      workouts.addAll(workouts);
+      workouts.addAll(workouts.toList());
     workouts.removeLast();
+    print(workouts);
 
     await RAM.write(
-        "currentWorkout", jsonEncode(workouts.map((e) => e.toMap()).toList()));
+        "runningWorkout", jsonEncode(workouts.map((e) => e.toMap()).toList()));
     Navigator.pushReplacementNamed(context, "/workouttimer-run");
   }
 

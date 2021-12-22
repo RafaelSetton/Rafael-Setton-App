@@ -6,6 +6,7 @@ import 'package:sql_treino/services/local/RAM.dart';
 import 'package:sql_treino/shared/functions/emptyValidator.dart';
 import 'package:sql_treino/shared/functions/loadVars.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
+import 'package:sql_treino/shared/models/argumentsModel.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
 
 class LoginPage extends StatefulWidget {
@@ -70,9 +71,9 @@ class _LoginPageState extends State<LoginPage> {
         // 200 OK
 
         await RAM.write("user", _email.text);
-        await loadVars();
+        ArgumentsModel arguments = await loadVars();
         Navigator.pushReplacementNamed(context, "/userpage",
-            arguments: _email.text);
+            arguments: arguments);
       } else {
         // 400 Bad Request
         alert(
