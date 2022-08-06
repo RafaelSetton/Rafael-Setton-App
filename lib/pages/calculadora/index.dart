@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:function_tree/function_tree.dart';
 
 class CalculadoraPage extends StatefulWidget {
@@ -34,7 +33,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       if (calculus.length < maxScreenLength) calculus += x;
 
       RegExp regex = RegExp("0[^,]+");
-      while (regex.hasMatch(calculus)) {
+      while (regex.matchAsPrefix(calculus) != null) {
         calculus = calculus.substring(1);
       }
     });
@@ -136,38 +135,36 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     );
   }
 
+  Widget screen() {
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      alignment: Alignment.center,
+      color: Colors.black,
+      child: Text(
+        calculus,
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        style: TextStyle(
+            fontSize: 50, color: Colors.white, fontStyle: FontStyle.normal),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    AppBar appBar = AppBar(
-      title: Text("Calculadora"),
-      centerTitle: true,
-      leading: BackButton(),
-    );
     setState(() {
       availableHeight =
-          MediaQuery.of(context).size.height - appBar.preferredSize.height;
+          MediaQuery.of(context).size.height - AppBar().preferredSize.height;
     });
 
     return Scaffold(
-      appBar: appBar,
+      appBar: AppBar(
+        title: Text("Calculadora"),
+        centerTitle: true,
+      ),
       body: Column(
         children: <Widget>[
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(10.0),
-              alignment: Alignment.center,
-              color: Colors.black,
-              child: Text(
-                calculus,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                style: TextStyle(
-                    fontSize: 50,
-                    color: Colors.white,
-                    fontStyle: FontStyle.normal),
-              ),
-            ),
-          ),
+          Expanded(child: screen()),
           Row(
             children: <Widget>[
               myContainer("CE", bg: Colors.orange, callback: clear),

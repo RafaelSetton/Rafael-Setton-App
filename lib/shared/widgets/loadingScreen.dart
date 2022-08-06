@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-Widget loadingScreen() => Center(
+Widget loadingScreen(BuildContext context) => Center(
       child: Text(
         "Carregando Dados...",
         style: TextStyle(
-          color: Colors.amber,
+          color: Theme.of(context).primaryColor,
           fontSize: 25,
         ),
         textAlign: TextAlign.center,

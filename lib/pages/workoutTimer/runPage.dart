@@ -99,8 +99,8 @@ class _RunState extends State<Run> {
       width: MediaQuery.of(context).size.width / 2,
       height: MediaQuery.of(context).size.height / 2,
       ringColor: Colors.grey.shade300,
-      fillColor: Colors.blue.shade300,
-      backgroundColor: Colors.blue[900],
+      fillColor: Theme.of(context).colorScheme.secondary,
+      backgroundColor: Theme.of(context).primaryColor,
       strokeWidth: 20.0,
       strokeCap: StrokeCap.round,
       textStyle: TextStyle(

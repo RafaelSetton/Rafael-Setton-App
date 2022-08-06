@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/database/storage.dart';
+import 'package:sql_treino/services/storage.dart';
 import 'package:sql_treino/shared/functions/getArguments.dart';
 import 'package:sql_treino/shared/models/chatModel.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';

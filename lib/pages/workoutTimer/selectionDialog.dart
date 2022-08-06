@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/services/RAM.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class SelectionDialog extends StatefulWidget {
@@ -67,7 +67,6 @@ class _SelectionDialogState extends State<SelectionDialog> {
     return Container(
       height: 50,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black12),
         borderRadius: BorderRadius.circular(15),
       ),
       margin: EdgeInsets.all(5),
@@ -78,7 +77,7 @@ class _SelectionDialogState extends State<SelectionDialog> {
           Text(label + ':'),
           Container(
             height: 30,
-            width: 30,
+            width: 60,
             child: TextField(
                 controller: controller,
                 keyboardType: TextInputType.number,

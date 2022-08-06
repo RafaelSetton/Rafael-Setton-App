@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/database/storage.dart';
-import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/RAM.dart';
 import 'package:sql_treino/shared/functions/buildFuture.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 
@@ -88,7 +88,6 @@ class _SavedState extends State<Saved> {
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: Colors.black,
                 width: 0.5,
               ),
             ),
@@ -108,26 +107,11 @@ class _SavedState extends State<Saved> {
     );
   }
 
-  Widget loadScreen() {
-    return Center(
-      child: Text(
-        "Carregando Dados...",
-        style: TextStyle(
-          decoration: TextDecoration.none,
-          color: Colors.blueAccent,
-          fontSize: 25,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
   Widget mainBody() {
     return Scaffold(
       appBar: AppBar(
         title: Text("Workout Timer - Treinos Salvos"),
         centerTitle: true,
-        backgroundColor: Colors.blue,
         leading: BackButton(),
       ),
       body: Column(

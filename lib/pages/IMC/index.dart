@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/shared/functions/emptyValidator.dart';
+import 'package:sql_treino/shared/widgets/commonInput.dart';
 
 class IMCPage extends StatefulWidget {
   @override
@@ -50,7 +50,6 @@ class _IMCPageState extends State<IMCPage> {
       appBar: AppBar(
         title: Text("Calculadora de IMC"),
         centerTitle: true,
-        backgroundColor: Colors.green,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
@@ -59,7 +58,6 @@ class _IMCPageState extends State<IMCPage> {
         ],
         leading: BackButton(),
       ),
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Form(
@@ -70,29 +68,19 @@ class _IMCPageState extends State<IMCPage> {
               Icon(
                 Icons.person_outline,
                 size: 150,
-                color: Colors.green,
+                color: Theme.of(context).colorScheme.inversePrimary,
               ),
-              TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "Peso (kg)",
-                  labelStyle: TextStyle(color: Colors.green, fontSize: 20.0),
-                ),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.green, fontSize: 28),
+              input(
                 controller: weightController,
-                validator: emptyValidator("Insira o seu Peso!"),
-              ),
-              TextFormField(
+                label: "Peso (kg)",
+                hint: "65",
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "Altura (cm)",
-                  labelStyle: TextStyle(color: Colors.green, fontSize: 20.0),
-                ),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.green, fontSize: 28),
+              ),
+              input(
                 controller: heightController,
-                validator: emptyValidator("Insira a sua Altura!"),
+                label: "Altura (cm)",
+                hint: "170",
+                keyboardType: TextInputType.number,
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -106,12 +94,8 @@ class _IMCPageState extends State<IMCPage> {
                   child: Text(
                     "Calcular",
                     style: TextStyle(
-                      color: Colors.white,
                       fontSize: 20,
                     ),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.green),
                   ),
                 ),
               ),
@@ -120,7 +104,6 @@ class _IMCPageState extends State<IMCPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18,
-                  color: Colors.green,
                 ),
               ),
             ],

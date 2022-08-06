@@ -1,5 +1,6 @@
 import 'dart:math';
 
+// TODO: Real Cryptography
 class Cryptography {
   static const String asciiChars =
       r"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%&()";

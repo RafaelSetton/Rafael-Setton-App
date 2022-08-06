@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/database/storage.dart';
+import 'package:sql_treino/services/storage.dart';
 import 'dart:async';
 
 import 'package:sql_treino/shared/functions/getArguments.dart';
@@ -40,11 +40,12 @@ class _ColorGamePageState extends State<ColorGamePage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 10), () {
+    Future.delayed(Duration(milliseconds: 10), () async {
       String email = getArguments(context)!.userEmail;
-      UserDB.show(email).then((user) => setState(() {
-            hs = user!.data.colorGamePts;
-          }));
+      UserModel? user = await UserDB.show(email);
+      setState(() {
+        hs = user!.data.colorGamePts;
+      });
     });
   }
 
@@ -62,8 +63,8 @@ class _ColorGamePageState extends State<ColorGamePage> {
     });
   }
 
-  void click(colorName) {
-    if (colorValues.indexOf(colorName) == colorStrings.indexOf(text)) {
+  void click(Color color) {
+    if (colorValues.indexOf(color) == colorStrings.indexOf(text)) {
       results++;
       barHeight += 20;
     } else {
@@ -106,7 +107,7 @@ class _ColorGamePageState extends State<ColorGamePage> {
     timer = Timer.periodic(Duration(milliseconds: 30), periodic);
   }
 
-  Container colorButton(color) {
+  Container colorButton(Color color) {
     return Container(
         width: MediaQuery.of(context).size.width / 3 - 10,
         height: 100,
@@ -182,7 +183,6 @@ class _ColorGamePageState extends State<ColorGamePage> {
                   height: MediaQuery.of(context).size.height / 3,
                   padding: EdgeInsets.all(10.0),
                   alignment: Alignment.center,
-                  //alignment: AlignmentGeometry,
                   child: Text(
                     text,
                     textAlign: TextAlign.center,

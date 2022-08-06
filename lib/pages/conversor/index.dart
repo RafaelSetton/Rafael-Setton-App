@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:sql_treino/shared/functions/buildFuture.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:sql_treino/shared/widgets/commonInput.dart';
 
 class ConversorPage extends StatefulWidget {
   @override
@@ -52,6 +53,13 @@ class _ConversorPageState extends State<ConversorPage> {
     }
   }
 
+  Future getData() async {
+    http.Response response = await http.get(Uri.parse(request));
+    Map data = json.decode(response.body);
+    dolar = double.parse(data["USD"]["high"]);
+    euro = double.parse(data["EUR"]["high"]);
+  }
+
   Widget bodyBuilder() {
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -73,60 +81,29 @@ class _ConversorPageState extends State<ConversorPage> {
     );
   }
 
-  Future getData() async {
-    http.Response response = await http.get(Uri.parse(request));
-    Map data = json.decode(response.body);
-    dolar = double.parse(data["USD"]["high"]);
-    euro = double.parse(data["EUR"]["high"]);
-  }
-
-  TextField buildTextField(String label, String prefix,
+  Widget buildTextField(String label, String prefix,
       TextEditingController controller, void Function(String) onChange) {
-    return TextField(
-      onChanged: onChange,
+    return input(
       controller: controller,
+      label: label,
+      hint: "0,00",
       keyboardType: TextInputType.numberWithOptions(decimal: true),
-      decoration: InputDecoration(
-        hintText: "0,00",
-        labelText: label,
-        labelStyle: TextStyle(
-          color: Colors.amber,
-          fontSize: 15,
-        ),
-        prefixText: prefix,
-      ),
-      style: TextStyle(
-        color: Colors.amber,
-        fontSize: 18,
-      ),
+      prefixText: prefix,
+      onChanged: onChange,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-          hintColor: Colors.amber,
-          primaryColor: Colors.white,
-          inputDecorationTheme: InputDecorationTheme(
-            enabledBorder:
-                OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-            focusedBorder:
-                OutlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
-            hintStyle: TextStyle(color: Colors.amber),
-          )),
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("\$ Conversor de Moedas \$"),
-          backgroundColor: Colors.amber,
-          leading: BackButton(),
-        ),
-        body: FutureBuilder(
-          future: getData(),
-          builder: buildFuture(bodyBuilder),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("\$ Conversor de Moedas \$"),
+        leading: BackButton(),
+      ),
+      body: FutureBuilder(
+        future: getData(),
+        builder: buildFuture(bodyBuilder),
       ),
     );
   }

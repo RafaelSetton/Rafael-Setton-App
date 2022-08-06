@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/cryptography/cryptography.dart';
-import 'package:sql_treino/services/database/storage.dart';
-import 'package:sql_treino/services/local/RAM.dart';
-import 'package:sql_treino/shared/functions/emptyValidator.dart';
+import 'package:sql_treino/services/cryptography.dart';
+import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/RAM.dart';
 import 'package:sql_treino/shared/functions/loadVars.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/models/argumentsModel.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
+import 'package:sql_treino/shared/widgets/commonInput.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,42 +18,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  Widget input(TextEditingController controller, String label, String hint,
-      {bool hide = false}) {
-    InputDecoration decoration = InputDecoration(
-      hintText: hint,
-      labelText: label,
-      labelStyle: TextStyle(
-        color: Colors.blue[900],
-        fontSize: 15,
-      ),
-      border: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Colors.blueGrey,
-          style: BorderStyle.solid,
-          width: 2,
-        ),
-      ),
-    );
-
-    return Container(
-      padding: EdgeInsets.all(8),
-      margin: EdgeInsets.only(bottom: 25),
-      child: TextFormField(
-        controller: controller,
-        obscureText: hide,
-        decoration: decoration,
-        style: TextStyle(
-          color: Colors.blue[500],
-          fontSize: 18,
-        ),
-        cursorWidth: 1.5,
-        cursorColor: Color.fromRGBO(40, 40, 230, 1),
-        validator: emptyValidator("O campo \"$label\" deve ser preenchido."),
-      ),
-    );
-  }
 
   Future tryLogin() async {
     UserModel? user = await UserDB.show(_email.text);
@@ -98,13 +62,11 @@ class _LoginPageState extends State<LoginPage> {
         child: Text(
           "Login",
           style: TextStyle(
-            color: Colors.grey[300],
             fontSize: 27,
             fontWeight: FontWeight.w500,
           ),
         ),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.blue[400]),
           padding: MaterialStateProperty.all(
               EdgeInsets.symmetric(horizontal: 30, vertical: 10)),
         ),
@@ -121,11 +83,10 @@ class _LoginPageState extends State<LoginPage> {
           Text(
             "Não possuo registro.",
             style: TextStyle(
-              color: Colors.lightBlue[400],
               decoration: TextDecoration.underline,
             ),
           ),
-          Icon(Icons.person_add, color: Colors.lightBlue[400]),
+          Icon(Icons.person_add, color: Theme.of(context).primaryColor),
         ],
       ),
     );
@@ -134,7 +95,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: Text("Login"),
         centerTitle: true,
@@ -146,8 +106,15 @@ class _LoginPageState extends State<LoginPage> {
             key: _formKey,
             child: Column(
               children: <Widget>[
-                input(_email, "E-mail", "seunome@exemplo.com"),
-                input(_password, "Senha", "", hide: true),
+                input(
+                    controller: _email,
+                    label: "E-mail",
+                    hint: "seunome@exemplo.com"),
+                input(
+                    controller: _password,
+                    label: "Senha",
+                    hint: "********",
+                    hide: true),
                 loginButton(),
                 goToRegisterButton(),
               ],

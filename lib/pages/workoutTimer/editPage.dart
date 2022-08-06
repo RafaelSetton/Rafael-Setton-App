@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sql_treino/pages/workoutTimer/selectionDialog.dart';
 import 'package:sql_treino/pages/workoutTimer/shared.dart';
-import 'package:sql_treino/services/database/storage.dart';
-import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/RAM.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class Edit extends StatefulWidget {
@@ -13,13 +13,9 @@ class Edit extends StatefulWidget {
 }
 
 class _EditState extends State<Edit> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController timeController = TextEditingController();
-
-  late Section _lastRemoved;
-  late int _lastRemovedPos;
-
-  List<Section> sequence = [];
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _timeController = TextEditingController();
+  List<Section> _sequence = [];
 
   @override
   void initState() {
@@ -29,7 +25,7 @@ class _EditState extends State<Edit> {
 
   // Handle Item add/delete
 
-  Section createSection(String name, String time) {
+  Section _createSection(String name, String time) {
     return Section(
       TextEditingController(text: name)
         ..addListener(() async => await _saveRAM()),
@@ -39,24 +35,24 @@ class _EditState extends State<Edit> {
     );
   }
 
-  Future addItem() async {
-    String name = nameController.text;
-    String time = timeController.text.split(RegExp("[.-]")).first;
+  Future _addItem() async {
+    String name = _nameController.text;
+    String time = _timeController.text.split(RegExp("[.-]")).first;
     if (name == "" || time == "") {
       return;
     }
 
     setState(() {
-      sequence.add(createSection(name, time));
-      nameController.text = "";
-      timeController.text = "";
+      _sequence.add(_createSection(name, time));
+      _nameController.text = "";
+      _timeController.text = "";
     });
     await _saveRAM();
   }
 
-  Future deleteItem(Key keyOfItem) async {
+  Future _deleteItem(Key keyOfItem) async {
     setState(() {
-      sequence.removeWhere((section) => (section.key == keyOfItem));
+      _sequence.removeWhere((section) => (section.key == keyOfItem));
     });
     await _saveRAM();
   }
@@ -73,24 +69,19 @@ class _EditState extends State<Edit> {
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black87),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TextField(
               decoration: new InputDecoration(
-                  hintText: "Treino 01",
-                  hintStyle: TextStyle(color: Colors.black26),
-                  labelText: "Nome do Treino",
-                  labelStyle: TextStyle(color: Colors.blue)),
+                hintText: "Treino 01",
+                labelText: "Nome do Treino",
+              ),
               controller: saveNameController,
             ),
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(Colors.lightBlue[500]),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -99,7 +90,7 @@ class _EditState extends State<Edit> {
               ),
               child: Text("Salvar"),
               onPressed: () async {
-                List<WorkoutModel> workouts = sequence
+                List<WorkoutModel> workouts = _sequence
                     .map(
                       (element) => WorkoutModel(
                         title: element.name.text,
@@ -127,15 +118,15 @@ class _EditState extends State<Edit> {
 
   Future _loadRAM() async {
     List<WorkoutModel> workouts = await readWorkout('currentWorkout');
-    sequence = workouts
-        .map((e) => createSection(e.title, e.duration.toString()))
+    _sequence = workouts
+        .map((e) => _createSection(e.title, e.duration.toString()))
         .toList();
 
     setState(() {});
   }
 
   Future _saveRAM() async {
-    List<Map> compiled = sequence
+    List<Map> compiled = _sequence
         .map((element) => {
               "title": element.name.text,
               "duration": int.parse(element.time.text),
@@ -154,7 +145,6 @@ class _EditState extends State<Edit> {
         controller: controller,
         decoration: InputDecoration(
           labelText: "Atividade",
-          labelStyle: TextStyle(color: Colors.blue),
         ),
       ),
     );
@@ -169,71 +159,37 @@ class _EditState extends State<Edit> {
         controller: controller,
         decoration: InputDecoration(
           labelText: "Tempo",
-          labelStyle: TextStyle(color: Colors.blue),
         ),
       ),
     );
   }
 
   Widget listItem(BuildContext context, int index) {
-    Section section = sequence[index];
-    return Dismissible(
-      background: Container(
-        color: Colors.red,
-        child: Icon(
-          Icons.delete,
-          color: Colors.white,
-        ),
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 15),
-      ),
-      direction: DismissDirection.startToEnd,
-      key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
-      onDismissed: (direction) {
-        setState(() {
-          _lastRemoved = sequence[index];
-          _lastRemovedPos = index;
-          sequence.removeAt(index);
-        });
-        final snack = SnackBar(
-          content: Text("Tarefa \"${_lastRemoved.name}\" excluída!"),
-          action: SnackBarAction(
-            label: "Desfazer",
-            onPressed: () {
-              setState(() {
-                sequence.insert(_lastRemovedPos, _lastRemoved);
-              });
-            },
-          ),
-          duration: Duration(seconds: 3),
-        );
-        ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(snack);
-      },
-      child: Container(
-        child: Row(
-          children: <Widget>[
-            inputName(section.name),
-            inputTime(section.time),
-            Container(
-              height: 50,
-              width: 50,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
-                  foregroundColor: MaterialStateProperty.all(Colors.white),
-                  shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
+    Section section = _sequence[index];
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        children: <Widget>[
+          inputName(section.name),
+          inputTime(section.time),
+          Container(
+            height: 50,
+            width: 50,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
                   ),
                 ),
-                child: Text("-"),
-                onPressed: () async => await deleteItem(section.key),
               ),
+              child: Text("-"),
+              onPressed: () async => await _deleteItem(section.key),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -241,8 +197,8 @@ class _EditState extends State<Edit> {
   Widget topBar() {
     return Row(
       children: <Widget>[
-        inputName(nameController),
-        inputTime(timeController),
+        inputName(_nameController),
+        inputTime(_timeController),
         Container(
           height: 50,
           width: 50,
@@ -257,7 +213,7 @@ class _EditState extends State<Edit> {
               ),
             ),
             child: Text("+"),
-            onPressed: () async => await addItem(),
+            onPressed: () async => await _addItem(),
           ),
         ),
       ],
@@ -278,7 +234,7 @@ class _EditState extends State<Edit> {
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.only(top: 10),
-              itemCount: sequence.length,
+              itemCount: _sequence.length,
               itemBuilder: listItem,
             ),
           ),
@@ -298,7 +254,6 @@ class _EditState extends State<Edit> {
               child: Text(
                 "Iniciar",
                 style: TextStyle(
-                  color: Colors.grey[200],
                   fontSize: 25,
                 ),
               ),
@@ -315,7 +270,6 @@ class _EditState extends State<Edit> {
         children: [
           Container(
             padding: EdgeInsets.all(15),
-            color: Colors.transparent,
             child: ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.transparent),
@@ -324,7 +278,7 @@ class _EditState extends State<Edit> {
               child: Text(
                 "Ver Salvos",
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -336,10 +290,8 @@ class _EditState extends State<Edit> {
           ),
           Container(
             padding: EdgeInsets.all(15),
-            color: Colors.transparent,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
                 elevation: MaterialStateProperty.all(0),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
@@ -350,7 +302,6 @@ class _EditState extends State<Edit> {
               child: Text(
                 "Salvar Treino",
                 style: TextStyle(
-                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),

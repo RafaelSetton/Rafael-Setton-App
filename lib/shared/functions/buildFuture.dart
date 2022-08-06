@@ -7,10 +7,10 @@ Widget Function(BuildContext, AsyncSnapshot) buildFuture(
   Widget function(BuildContext context, AsyncSnapshot snapshot) {
     switch (snapshot.connectionState) {
       case ConnectionState.done:
-        if (snapshot.hasError) return errorScreen();
+        if (snapshot.hasError) return errorScreen(context);
         return builder();
       default:
-        return loadingScreen();
+        return loadingScreen(context);
     }
   }
 

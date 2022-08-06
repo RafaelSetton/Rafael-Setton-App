@@ -13,6 +13,9 @@ dependencies:
   # Basics
   cupertino_icons: ^1.0.3
   http: ^0.13.3
+  curved_navigation_bar: ^1.0.3
+  provider: ^6.0.3
+  flutter_switch: ^0.3.2
 
   # Firebase
   firebase_core: ^1.4.0
@@ -31,7 +34,7 @@ dependencies:
   function_tree: ^0.8.12
 
   # ChatApp
-  flutter_typeahead: ^3.2.1
+  flutter_typeahead: ^4.0.0
 
 dev_dependencies:
   flutter_test:

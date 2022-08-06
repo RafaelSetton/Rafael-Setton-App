@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/database/storage.dart';
+import 'package:sql_treino/services/storage.dart';
 import 'package:sql_treino/shared/functions/getArguments.dart';
 import 'package:sql_treino/shared/models/ToDoModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
@@ -20,7 +21,8 @@ class _ToDoPageState extends State<ToDoPage> {
   @override
   void initState() {
     super.initState();
-    _readData().then((value) {
+    Future.delayed(Duration(milliseconds: 100), () async {
+      List<ToDoModel> value = await _readData();
       setState(() {
         _toDoList = value;
       });
@@ -117,7 +119,6 @@ class _ToDoPageState extends State<ToDoPage> {
       appBar: AppBar(
         title: Text("Lista de Tarefas"),
         centerTitle: true,
-        backgroundColor: Colors.blue,
         leading: BackButton(),
       ),
       body: Column(
@@ -131,15 +132,11 @@ class _ToDoPageState extends State<ToDoPage> {
                     controller: textController,
                     decoration: InputDecoration(
                       labelText: "Nova tarefa",
-                      labelStyle: TextStyle(color: Colors.blue),
                     ),
                   ),
                 ),
+                SizedBox(width: 10),
                 ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
-                  ),
                   child: Text("ADD"),
                   onPressed: _addToDo,
                 ),

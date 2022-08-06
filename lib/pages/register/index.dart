@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/cryptography/cryptography.dart';
-import 'package:sql_treino/services/database/storage.dart';
-import 'package:sql_treino/shared/functions/emptyValidator.dart';
+import 'package:sql_treino/services/cryptography.dart';
+import 'package:sql_treino/services/storage.dart';
 import 'package:sql_treino/shared/models/userDataModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
-import 'package:sql_treino/shared/themes/theme.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
+import 'package:sql_treino/shared/widgets/commonInput.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -22,46 +21,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  Widget input(TextEditingController controller, String label, String hint,
-      {bool hide = false}) {
-    InputDecoration decoration = InputDecoration(
-      hintText: hint,
-      labelText: label,
-      labelStyle: TextStyle(
-        color: Colors.blue[900],
-        fontSize: 15,
-      ),
-      border: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Colors.blueGrey,
-          style: BorderStyle.solid,
-          width: 2,
-        ),
-      ),
-    );
-    return Container(
-      padding: EdgeInsets.all(8),
-      margin: EdgeInsets.only(bottom: 25),
-      child: TextFormField(
-        controller: controller,
-        obscureText: hide,
-        decoration: decoration,
-        style: TextStyle(
-          color: Colors.blue[500],
-          fontSize: 18,
-        ),
-        cursorWidth: 1.5,
-        cursorColor: Color.fromRGBO(40, 40, 230, 1),
-        validator: emptyValidator("O campo \"$label\" deve ser preenchido."),
-      ),
-    );
-  }
-
   Widget birthdayInput() {
     return Container(
       height: 200,
       child: CupertinoDatePicker(
-        backgroundColor: AppTheme.background,
+        backgroundColor: Theme.of(context).backgroundColor,
         mode: CupertinoDatePickerMode.date,
         initialDateTime: _birthday,
         onDateTimeChanged: (DateTime date) {
@@ -126,13 +90,11 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Text(
           "Register",
           style: TextStyle(
-            color: AppTheme.textOnPrimary,
             fontSize: 27,
             fontWeight: FontWeight.w500,
           ),
         ),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(AppTheme.primary),
           padding: MaterialStateProperty.all(
               EdgeInsets.symmetric(horizontal: 15, vertical: 10)),
         ),
@@ -143,7 +105,6 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: Text("Registro"),
         centerTitle: true,
@@ -156,10 +117,24 @@ class _RegisterPageState extends State<RegisterPage> {
             key: _formkey,
             child: Column(
               children: <Widget>[
-                input(_name, "Nome Completo", "João da Silva Oliveira"),
-                input(_email, "E-mail", "seu_nome@exemplo.com"),
-                input(_password, "Senha", "", hide: true),
-                input(_confirm, "Confirmar Senha", "", hide: true),
+                input(
+                    controller: _name,
+                    label: "Nome Completo",
+                    hint: "João da Silva Oliveira"),
+                input(
+                    controller: _email,
+                    label: "E-mail",
+                    hint: "seu_nome@exemplo.com"),
+                input(
+                    controller: _password,
+                    label: "Senha",
+                    hint: "",
+                    hide: true),
+                input(
+                    controller: _confirm,
+                    label: "Confirmar Senha",
+                    hint: "",
+                    hide: true),
                 birthdayInput(),
                 registerButton(),
               ],

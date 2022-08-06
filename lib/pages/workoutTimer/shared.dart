@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/local/RAM.dart';
+import 'package:sql_treino/services/RAM.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class Section {
