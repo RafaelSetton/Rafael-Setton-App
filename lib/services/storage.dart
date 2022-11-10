@@ -1,14 +1,18 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sql_treino/shared/models/chatModel.dart';
 import 'package:sql_treino/shared/models/messageModel.dart';
+import 'package:sql_treino/shared/models/score.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
-import 'package:sql_treino/shared/models/workoutSetModel.dart';
 
-class UserDB {
+class DB {
   static CollectionReference get collection =>
       FirebaseFirestore.instance.collection("users");
+}
 
+class UserDB extends DB {
   static Future post(UserModel user, {bool create = false}) async {
     if (user.password.contains(RegExp(r"[^a-zA-Z0-9 .()!@#$%&]"))) {
       return "senha";
@@ -19,51 +23,53 @@ class UserDB {
       }
     }
 
-    await collection.doc(user.email).set(user.toMap());
+    await DB.collection.doc(user.email).set(user.toMap());
   }
 
   static Future<List<String>> list() async {
-    final response = await collection.get();
+    final response = await DB.collection.get();
     return response.docs.map((e) => e.id).toList();
   }
 
   static Future<UserModel?> show(String email) async {
-    final document = await collection.doc(email).get();
+    final document = await DB.collection.doc(email).get();
     return document.exists
         ? UserModel.fromMap(document.data() as Map<String, dynamic>)
         : null;
   }
 
   static Future delete(String email) async {
-    await collection.doc(email).delete();
+    await DB.collection.doc(email).delete();
   }
 }
 
-class WorkoutDB {
+class WorkoutDB extends DB {
   static late String userEmail;
 
-  static Future<UserModel> get user async => (await UserDB.show(userEmail))!;
+  static CollectionReference get collection =>
+      DB.collection.doc(userEmail).collection("workouts");
 
-  static Future post(String name, List<WorkoutModel> data) async {
-    UserModel? user = await UserDB.show(userEmail);
-    if (user == null) return;
-    user.data.workouts[name] = WorkoutSetModel(workouts: data);
-    await UserDB.post(user);
+  static Future post(String name, WorkoutModel data) async {
+    final postData = Map.fromIterables(
+        List<String>.generate(data.workouts.length, (i) => i.toString()),
+        data.workouts.map((e) => e.toMap()));
+    await collection.doc(name).set(postData);
   }
 
   static Future<List<String>> list() async {
-    // ["name1", "name2", "name3"]
-    return (await user).data.workouts.keys.toList();
+    QuerySnapshot snapshot = await collection.get();
+    return snapshot.docs.map((doc) => doc.id).toList();
   }
 
-  static Future<List<WorkoutModel>> show(String name) async {
-    final response = await UserDB.show(userEmail);
-    return response!.data.workouts[name]!.workouts;
+  static Future<WorkoutModel> show(String name) async {
+    final LinkedHashMap data =
+        (await collection.doc(name).get()).data() as LinkedHashMap;
+    final workouts = data.values.map((e) => ExerciseModel.fromMap(e)).toList();
+    return WorkoutModel(workouts: workouts);
   }
 
   static Future delete(String name) async {
-    final userData = await user;
-    userData.data.workouts.remove(name);
+    return await collection.doc(name).delete();
   }
 }
 

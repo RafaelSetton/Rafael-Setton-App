@@ -49,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
       email: _email.text.trim(),
       password: Cryptography.encrypt(_password.text),
       birthday: "${_birthday.day}/${_birthday.month}/${_birthday.year}",
-      data: UserDataModel(colorGamePts: 0, todos: [], workouts: {}, chats: []),
+      data: UserDataModel(colorGamePts: 0, todos: [], chats: [], ssaScores: []),
     );
     String err = await UserDB.post(user, create: true);
     switch (err) {

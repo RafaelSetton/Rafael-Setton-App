@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:sql_treino/pages/workoutTimer/savedPage.dart';
 import 'package:sql_treino/pages/workoutTimer/selectionDialog.dart';
 import 'package:sql_treino/pages/workoutTimer/shared.dart';
 import 'package:sql_treino/services/storage.dart';
-import 'package:sql_treino/services/RAM.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class Edit extends StatefulWidget {
@@ -16,21 +15,21 @@ class _EditState extends State<Edit> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   List<Section> _sequence = [];
-
-  @override
-  void initState() {
-    super.initState();
-    Timer(Duration(milliseconds: 100), () async => await _loadRAM());
-  }
-
+  WorkoutModel get workouts => WorkoutModel(
+      workouts: _sequence
+          .map(
+            (e) => ExerciseModel(
+              title: e.name.text,
+              duration: int.parse(e.time.text),
+            ),
+          )
+          .toList());
   // Handle Item add/delete
 
   Section _createSection(String name, String time) {
     return Section(
-      TextEditingController(text: name)
-        ..addListener(() async => await _saveRAM()),
-      TextEditingController(text: time)
-        ..addListener(() async => await _saveRAM()),
+      TextEditingController(text: name),
+      TextEditingController(text: time),
       UniqueKey(),
     );
   }
@@ -47,14 +46,12 @@ class _EditState extends State<Edit> {
       _nameController.text = "";
       _timeController.text = "";
     });
-    await _saveRAM();
   }
 
   Future _deleteItem(Key keyOfItem) async {
     setState(() {
       _sequence.removeWhere((section) => (section.key == keyOfItem));
     });
-    await _saveRAM();
   }
 
   // Handle DB connections
@@ -90,14 +87,7 @@ class _EditState extends State<Edit> {
               ),
               child: Text("Salvar"),
               onPressed: () async {
-                List<WorkoutModel> workouts = _sequence
-                    .map(
-                      (element) => WorkoutModel(
-                        title: element.name.text,
-                        duration: int.parse(element.time.text),
-                      ),
-                    )
-                    .toList();
+                if (saveNameController.text.isEmpty) return;
                 await WorkoutDB.post(saveNameController.text, workouts);
 
                 Navigator.pop(context); // Pop Dialog
@@ -115,26 +105,6 @@ class _EditState extends State<Edit> {
       builder: dialogBuilder,
     );
   }
-
-  Future _loadRAM() async {
-    List<WorkoutModel> workouts = await readWorkout('currentWorkout');
-    _sequence = workouts
-        .map((e) => _createSection(e.title, e.duration.toString()))
-        .toList();
-
-    setState(() {});
-  }
-
-  Future _saveRAM() async {
-    List<Map> compiled = _sequence
-        .map((element) => {
-              "title": element.name.text,
-              "duration": int.parse(element.time.text),
-            })
-        .toList();
-    await RAM.write("currentWorkout", jsonEncode(compiled));
-  }
-
   // Widget Helpers
 
   Widget inputName(TextEditingController controller) {
@@ -259,7 +229,9 @@ class _EditState extends State<Edit> {
               ),
               onPressed: () async {
                 await showDialog(
-                    context: context, builder: (_) => SelectionDialog());
+                    context: context,
+                    builder: (_) => SelectionDialog(),
+                    routeSettings: RouteSettings(arguments: workouts));
               },
             ),
           ),
@@ -283,8 +255,15 @@ class _EditState extends State<Edit> {
                 ),
               ),
               onPressed: () async {
-                await Navigator.pushNamed(context, "/workouttimer-saved");
-                await _loadRAM();
+                final WorkoutModel result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Saved()),
+                );
+                _sequence = result.workouts
+                    .map<Section>(
+                        (e) => _createSection(e.title, e.duration.toString()))
+                    .toList();
+                setState(() {});
               },
             ),
           ),

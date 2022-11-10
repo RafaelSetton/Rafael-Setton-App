@@ -9,7 +9,10 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-  ]).then(
+  ]).then((value) async {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.white));
+  }).then(
     (value) => runApp(ChangeNotifierProvider<ThemeChanger>(
       create: (_) => ThemeChanger(Themes.light),
       child: MaterialAppWithTheme(),
