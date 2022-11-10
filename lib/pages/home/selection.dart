@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/shared/functions/getArguments.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class SelectionPage extends StatelessWidget {
   const SelectionPage({Key? key}) : super(key: key);
@@ -12,8 +12,7 @@ class SelectionPage extends StatelessWidget {
         child: Text(
           text,
         ),
-        onPressed: () => Navigator.pushNamed(context, "/$routeName",
-            arguments: getArguments(context)),
+        onPressed: () => Navigator.pushNamed(context, "/$routeName"),
       ),
     );
   }
@@ -27,7 +26,7 @@ class SelectionPage extends StatelessWidget {
           children: <Widget>[
             Text(
               "Você está logado como\n"
-              "'${getArguments(context)!.userEmail}'",
+              "'${globals.userEmail}'",
               style: TextStyle(
                 fontSize: 20,
                 height: 2,
@@ -41,6 +40,7 @@ class SelectionPage extends StatelessWidget {
             button("Todo List", "todolist", context),
             button("Workout Timer", "workouttimer-edit", context),
             button("Chat App", "chatlist", context),
+            button("Somando Saber App", "somando-saber", context),
           ],
         ),
       ),

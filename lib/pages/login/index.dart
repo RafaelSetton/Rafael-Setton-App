@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:sql_treino/services/cryptography.dart';
 import 'package:sql_treino/services/storage.dart';
 import 'package:sql_treino/services/RAM.dart';
-import 'package:sql_treino/shared/functions/loadVars.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
-import 'package:sql_treino/shared/models/argumentsModel.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
 import 'package:sql_treino/shared/widgets/commonInput.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -35,9 +34,8 @@ class _LoginPageState extends State<LoginPage> {
         // 200 OK
 
         await RAM.write("user", _email.text);
-        ArgumentsModel arguments = await loadVars();
-        Navigator.pushReplacementNamed(context, "/userpage",
-            arguments: arguments);
+        await globals.loadVars();
+        Navigator.pushReplacementNamed(context, "/userpage");
       } else {
         // 400 Bad Request
         alert(

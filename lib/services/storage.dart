@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sql_treino/shared/models/chatModel.dart';
 import 'package:sql_treino/shared/models/messageModel.dart';
-import 'package:sql_treino/shared/models/score.dart';
+import 'package:sql_treino/shared/models/SSAScoreModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 
@@ -112,5 +112,30 @@ class ChatAppDB {
       user.data.chats.remove(chatID);
       await UserDB.post(user);
     }
+  }
+}
+
+class SSAScoresDB {
+  static late String userEmail;
+
+  static CollectionReference get collection =>
+      DB.collection.doc(userEmail).collection("scores");
+
+  static Future<List<SSAScoreModel>> get() async {
+    final doc = await collection.doc("SSA").get();
+    final LinkedHashMap data = doc.data() as LinkedHashMap;
+    final List<SSAScoreModel> response = data.keys
+        .map<SSAScoreModel>((k) => SSAScoreModel.fromMap(int.parse(k), data[k]))
+        .toList();
+    return response;
+  }
+
+  Future set(SSAScoreModel newScore) async {
+    final doc = collection.doc("SSA");
+
+    final data = newScore.toMap();
+
+    if ((await doc.get()).exists) return doc.update(data);
+    return doc.set(data);
   }
 }

@@ -3,13 +3,11 @@ import 'package:sql_treino/pages/chatApp/helpers/imageDialog.dart';
 
 import 'package:sql_treino/services/storage.dart';
 import 'package:sql_treino/shared/functions/buildFuture.dart';
-import 'package:sql_treino/shared/functions/getArguments.dart';
-import 'package:sql_treino/shared/models/argumentsModel.dart';
-
 import 'package:sql_treino/shared/models/chatModel.dart';
 import 'package:sql_treino/shared/models/messageModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/widgets/progressDialog.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 // TODO: FIX IMAGE LOADING
 class ListChatsPage extends StatefulWidget {
@@ -77,7 +75,8 @@ class _ListChatsPageState extends State<ListChatsPage> {
             chatID: "",
             content: chat.id,
           );
-    final ArgumentsModel arguments = getArguments(context)!;
+
+    globals.arguments = chat;
 
     return TextButton(
       onLongPress: () async {
@@ -85,8 +84,7 @@ class _ListChatsPageState extends State<ListChatsPage> {
         setState(() {});
       },
       onPressed: () async {
-        await Navigator.pushNamed(context, "/chat",
-            arguments: getArguments(context)!..argument = chat);
+        await Navigator.pushNamed(context, "/chat");
         setState(() {});
       },
       child: Container(
@@ -104,8 +102,7 @@ class _ListChatsPageState extends State<ListChatsPage> {
             TextButton(
               onPressed: () async => await showDialog(
                 context: context,
-                builder: (context) =>
-                    ImageDialog(chat: chat, arguments: arguments),
+                builder: (context) => ImageDialog(chat: chat),
               ),
               child: Container(
                 decoration: BoxDecoration(
@@ -171,7 +168,7 @@ class _ListChatsPageState extends State<ListChatsPage> {
   }
 
   Future<List<ChatModel>> getData() async {
-    UserModel user = (await UserDB.show(getArguments(context)!.userEmail))!;
+    UserModel user = (await UserDB.show(globals.userEmail))!;
     List<ChatModel> response = [];
     for (String id in user.data.chats)
       response.add(await ChatAppDB.getChat(id));
@@ -202,8 +199,7 @@ class _ListChatsPageState extends State<ListChatsPage> {
           ),
         ),
         onPressed: () async {
-          await Navigator.pushNamed(context, "/newchat",
-              arguments: getArguments(context));
+          await Navigator.pushNamed(context, "/newchat");
           await getData();
         },
       ),

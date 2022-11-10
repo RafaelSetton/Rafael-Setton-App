@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sql_treino/pages/chatApp/helpers/firebaseImageHandler.dart';
 import 'package:sql_treino/services/storage.dart';
-import 'package:sql_treino/shared/models/argumentsModel.dart';
 import 'package:sql_treino/shared/models/chatModel.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class ImageDialog extends StatelessWidget {
   final ChatModel chat;
-  final ArgumentsModel arguments;
 
-  const ImageDialog({Key? key, required this.chat, required this.arguments})
-      : super(key: key);
+  const ImageDialog({Key? key, required this.chat}) : super(key: key);
 
   Widget navigationButton(
       {required Icon icon, required void Function() onPressed}) {
@@ -53,7 +51,7 @@ class ImageDialog extends StatelessWidget {
               navigationButton(
                 onPressed: () async {
                   FirebaseImageHandler handler =
-                      FirebaseImageHandler(arguments.firebaseApp);
+                      FirebaseImageHandler(globals.firebaseApp);
 
                   String? downloadURL = (await handler.upload())
                       ?.replaceAll("/", "%2F")

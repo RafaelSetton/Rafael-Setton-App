@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/storage.dart';
-import 'package:sql_treino/shared/functions/getArguments.dart';
 import 'package:sql_treino/shared/models/chatModel.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:sql_treino/shared/widgets/progressDialog.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class NewChatPage extends StatefulWidget {
   const NewChatPage({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class _NewChatPageState extends State<NewChatPage> {
   String? _userEmail;
 
   String get userEmail {
-    if (_userEmail == null) _userEmail = getArguments(context)!.userEmail;
+    if (_userEmail == null) _userEmail = globals.userEmail;
     return _userEmail!;
   }
 

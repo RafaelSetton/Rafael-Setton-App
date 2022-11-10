@@ -11,6 +11,7 @@ import 'package:sql_treino/pages/splash/index.dart';
 import 'package:sql_treino/pages/toDo/index.dart';
 import 'package:sql_treino/pages/workoutTimer/index.dart' as WorkoutTimer;
 import 'package:sql_treino/pages/chatApp/index.dart' as ChatApp;
+import 'package:sql_treino/pages/somandoSaber/index.dart' as SomandoSaberApp;
 
 final Map<String, WidgetBuilder> routes = {
   "/splash": (context) => SplashPage(),
@@ -28,4 +29,8 @@ final Map<String, WidgetBuilder> routes = {
   "/chatlist": (context) => ChatApp.ListChatsPage(),
   "/chat": (context) => ChatApp.ChatPage(),
   "/newchat": (context) => ChatApp.NewChatPage(),
+  "/somando-saber": (context) => SomandoSaberApp.HomePage(),
+  "/somando-saber-select": (context) => SomandoSaberApp.SelectionPage(),
+  "/somando-saber-game": (context) => SomandoSaberApp.GamePage(),
+  "/somando-saber-scores": (context) => SomandoSaberApp.HighScorePage(),
 };

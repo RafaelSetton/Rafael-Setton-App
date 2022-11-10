@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:sql_treino/pages/chatApp/helpers/messageRenderer.dart';
 import 'package:sql_treino/services/storage.dart';
 import 'package:sql_treino/shared/functions/buildFuture.dart';
-import 'package:sql_treino/shared/functions/getArguments.dart';
 import 'package:sql_treino/shared/models/chatModel.dart';
 import 'package:sql_treino/shared/models/messageModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -105,12 +105,12 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> loadData() async {
-    user = (await UserDB.show(getArguments(context)!.userEmail))!;
+    user = (await UserDB.show(globals.userEmail))!;
   }
 
   @override
   Widget build(BuildContext context) {
-    data = getArguments(context)!.argument as ChatModel;
+    data = globals.arguments as ChatModel;
 
     if (user == null)
       return FutureBuilder(

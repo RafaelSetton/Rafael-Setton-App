@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sql_treino/services/RAM.dart';
 import 'package:sql_treino/services/themenotifier.dart';
-import 'package:sql_treino/shared/functions/loadVars.dart';
-import 'package:sql_treino/shared/models/argumentsModel.dart';
 import 'package:sql_treino/shared/themes.dart' as Themes;
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -15,7 +14,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   Future authorize(BuildContext context) async {
-    ArgumentsModel args = await loadVars();
+    await globals.loadVars();
 
     /*final col = await UserDB.collection.get();
     for (var doc in col.docs) {
@@ -30,9 +29,9 @@ class _SplashPageState extends State<SplashPage> {
       await UserDB.collection.doc(id).set(user);
     }*/
 
-    String route = args.userEmail.isNotEmpty ? "/userpage" : "/login";
+    String route = globals.userEmail.isNotEmpty ? "/userpage" : "/login";
 
-    Navigator.pushReplacementNamed(context, route, arguments: args);
+    Navigator.pushReplacementNamed(context, route);
 
     RAM.read("darkTheme").then((value) {
       Provider.of<ThemeChanger>(context, listen: false)

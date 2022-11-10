@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:sql_treino/pages/workoutTimer/shared.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class Run extends StatefulWidget {
   @override
@@ -24,7 +24,7 @@ class _RunState extends State<Run> {
   CountDownController timeController = CountDownController();
 
   void initialize() {
-    sequence = ModalRoute.of(context)!.settings.arguments as WorkoutModel;
+    sequence = globals.arguments as WorkoutModel;
     String thisName = sequence.workouts.first.title;
     int thisTime = sequence.workouts.first.duration;
     textToSpeech.speak(

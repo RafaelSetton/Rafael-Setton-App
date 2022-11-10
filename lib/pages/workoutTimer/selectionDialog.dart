@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class SelectionDialog extends StatefulWidget {
   const SelectionDialog({Key? key}) : super(key: key);
@@ -25,8 +26,7 @@ class _SelectionDialogState extends State<SelectionDialog> {
   }
 
   void saveAndPop() async {
-    WorkoutModel workouts =
-        ModalRoute.of(context)!.settings.arguments as WorkoutModel;
+    WorkoutModel workouts = globals.arguments as WorkoutModel;
 
     // Add Pausas
     for (int i = 1; i <= workouts.workouts.length; i += 2)
@@ -50,11 +50,8 @@ class _SelectionDialogState extends State<SelectionDialog> {
       workouts.workouts.addAll(workouts.workouts.toList());
     workouts.workouts.removeLast();
 
-    Navigator.pushReplacementNamed(
-      context,
-      "/workouttimer-run",
-      arguments: workouts,
-    );
+    globals.arguments = workouts;
+    Navigator.pushReplacementNamed(context, "/workouttimer-run");
   }
 
   Widget itemField(String label, TextEditingController controller) {

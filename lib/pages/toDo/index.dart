@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/storage.dart';
-import 'package:sql_treino/shared/functions/getArguments.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 import 'package:sql_treino/shared/models/ToDoModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 
@@ -30,14 +30,14 @@ class _ToDoPageState extends State<ToDoPage> {
   }
 
   Future _saveData() async {
-    UserModel user = (await UserDB.show(getArguments(context)!.userEmail))!;
+    UserModel user = (await UserDB.show(globals.userEmail))!;
     user.data.todos = _toDoList;
     await UserDB.post(user);
   }
 
   Future<List<ToDoModel>> _readData() async {
     try {
-      return (await UserDB.show(getArguments(context)!.userEmail))!.data.todos;
+      return (await UserDB.show(globals.userEmail))!.data.todos;
     } catch (err) {
       return [];
     }

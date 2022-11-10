@@ -5,6 +5,7 @@ import 'package:sql_treino/pages/workoutTimer/selectionDialog.dart';
 import 'package:sql_treino/pages/workoutTimer/shared.dart';
 import 'package:sql_treino/services/storage.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class Edit extends StatefulWidget {
   @override
@@ -228,10 +229,11 @@ class _EditState extends State<Edit> {
                 ),
               ),
               onPressed: () async {
+                globals.arguments = workouts;
                 await showDialog(
-                    context: context,
-                    builder: (_) => SelectionDialog(),
-                    routeSettings: RouteSettings(arguments: workouts));
+                  context: context,
+                  builder: (_) => SelectionDialog(),
+                );
               },
             ),
           ),

@@ -36,6 +36,10 @@ dependencies:
   # ChatApp
   flutter_typeahead: ^4.0.0
 
+  # Somando Saber
+  audioplayers: ^1.0.1
+  intl: ^0.17.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -49,6 +53,7 @@ flutter_icons:
 flutter:
   assets:
     - lib/assets/
+    - lib/assets/Somando_Saber/
     - assets/
 
   uses-material-design: true

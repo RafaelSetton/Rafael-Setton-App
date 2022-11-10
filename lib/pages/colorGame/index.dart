@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/storage.dart';
 import 'dart:async';
 
-import 'package:sql_treino/shared/functions/getArguments.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
+import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class ColorGamePage extends StatefulWidget {
   @override
@@ -41,8 +41,7 @@ class _ColorGamePageState extends State<ColorGamePage> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 10), () async {
-      String email = getArguments(context)!.userEmail;
-      UserModel? user = await UserDB.show(email);
+      UserModel? user = await UserDB.show(globals.userEmail);
       setState(() {
         hs = user!.data.colorGamePts;
       });
@@ -95,8 +94,7 @@ class _ColorGamePageState extends State<ColorGamePage> {
           color = Colors.grey;
         });
         if (results > hs) {
-          String email = getArguments(context)!.userEmail;
-          UserModel user = (await UserDB.show(email))!;
+          UserModel user = (await UserDB.show(globals.userEmail))!;
           user.data.colorGamePts = results;
           hs = results;
           await UserDB.post(user);

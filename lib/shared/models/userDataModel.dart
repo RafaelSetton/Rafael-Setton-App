@@ -1,7 +1,7 @@
 import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:sql_treino/shared/models/ToDoModel.dart';
-import 'package:sql_treino/shared/models/workoutSetModel.dart';
 
 class UserDataModel {
   int colorGamePts;
@@ -60,13 +60,9 @@ class UserDataModel {
     return other is UserDataModel &&
         other.colorGamePts == colorGamePts &&
         collectionEquals(other.todos, todos) &&
-        collectionEquals(other.chats, chats) &&
         collectionEquals(other.chats, chats);
   }
 
   @override
-  int get hashCode =>
-      colorGamePts.hashCode ^
-      todos.hashCode ^
-      chats.hashCode
+  int get hashCode => colorGamePts.hashCode ^ todos.hashCode ^ chats.hashCode;
 }
