@@ -14,16 +14,13 @@ class Saved extends StatefulWidget {
 class _SavedState extends State<Saved> {
   late List data;
   late String _lastRemovedName;
-  late List<WorkoutModel> _lastRemovedValue;
+  late WorkoutModel _lastRemovedValue;
   late int _lastRemovedPos;
 
   Future choose(int index) async {
     String name = data[index];
-    List<WorkoutModel> workout = await WorkoutDB.show(name);
-
-    await RAM.write(
-        "currentWorkout", jsonEncode(workout.map((e) => e.toMap()).toList()));
-    Navigator.pop(context);
+    WorkoutModel workout = await WorkoutDB.show(name);
+    Navigator.pop(context, workout);
   }
 
   Future deleteItem(int index) async {
@@ -31,7 +28,7 @@ class _SavedState extends State<Saved> {
     _lastRemovedValue = await WorkoutDB.show(_lastRemovedName);
     _lastRemovedPos = index;
     setState(() {
-      data.removeAt(index);
+      data.removeAt(index); // TODO: Not trigger full reload
     });
     await WorkoutDB.delete(_lastRemovedName);
   }

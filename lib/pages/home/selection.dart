@@ -9,13 +9,8 @@ class SelectionPage extends StatelessWidget {
       width: 200,
       margin: EdgeInsets.all(10),
       child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(
-              Theme.of(context).colorScheme.secondary),
-        ),
         child: Text(
           text,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
         ),
         onPressed: () => Navigator.pushNamed(context, "/$routeName",
             arguments: getArguments(context)),

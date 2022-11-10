@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sql_treino/services/RAM.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class SelectionDialog extends StatefulWidget {
@@ -13,12 +10,10 @@ class SelectionDialog extends StatefulWidget {
 }
 
 class _SelectionDialogState extends State<SelectionDialog> {
-  TextEditingController exerciseIntervalController =
+  TextEditingController exerciseIntervalCtrl =
       TextEditingController(text: "10");
-  TextEditingController seriesIntervalController =
-      TextEditingController(text: "20");
-  TextEditingController seriesCountController =
-      TextEditingController(text: "1");
+  TextEditingController seriesIntervalCtrl = TextEditingController(text: "20");
+  TextEditingController seriesCountCtrl = TextEditingController(text: "1");
 
   void onChanged(TextEditingController controller) {
     if (controller.text.isEmpty)
@@ -30,37 +25,36 @@ class _SelectionDialogState extends State<SelectionDialog> {
   }
 
   void saveAndPop() async {
-    List<WorkoutModel> workouts = List<Map<String, dynamic>>.from(
-            jsonDecode((await RAM.read("currentWorkout"))!))
-        .map((e) => WorkoutModel.fromMap(e))
-        .toList();
+    WorkoutModel workouts =
+        ModalRoute.of(context)!.settings.arguments as WorkoutModel;
 
     // Add Pausas
-    for (int i = 1; i <= workouts.length; i += 2)
-      workouts.insert(
+    for (int i = 1; i <= workouts.workouts.length; i += 2)
+      workouts.workouts.insert(
         i,
-        WorkoutModel(
+        ExerciseModel(
           title: "Pausa",
-          duration: int.tryParse(exerciseIntervalController.text) ?? 0,
+          duration: int.tryParse(exerciseIntervalCtrl.text) ?? 0,
         ),
       );
-    workouts.removeLast();
-    workouts.add(
-      WorkoutModel(
+    workouts.workouts.removeLast();
+    workouts.workouts.add(
+      ExerciseModel(
         title: "Pausa",
-        duration: int.tryParse(seriesIntervalController.text) ?? 0,
+        duration: int.tryParse(seriesIntervalCtrl.text) ?? 0,
       ),
     );
 
     // Multiplica
-    for (int i = 1; i < (int.tryParse(seriesCountController.text) ?? 0); i++)
-      workouts.addAll(workouts.toList());
-    workouts.removeLast();
-    print(workouts);
+    for (int i = 1; i < (int.tryParse(seriesCountCtrl.text) ?? 0); i++)
+      workouts.workouts.addAll(workouts.workouts.toList());
+    workouts.workouts.removeLast();
 
-    await RAM.write(
-        "runningWorkout", jsonEncode(workouts.map((e) => e.toMap()).toList()));
-    Navigator.pushReplacementNamed(context, "/workouttimer-run");
+    Navigator.pushReplacementNamed(
+      context,
+      "/workouttimer-run",
+      arguments: workouts,
+    );
   }
 
   Widget itemField(String label, TextEditingController controller) {
@@ -100,10 +94,9 @@ class _SelectionDialogState extends State<SelectionDialog> {
           child: Container(
             child: Column(
               children: [
-                itemField(
-                    "Intervalo entre exercícios", exerciseIntervalController),
-                itemField("Intervalo entre séries", seriesIntervalController),
-                itemField("N° de séries", seriesCountController),
+                itemField("Intervalo entre exercícios", exerciseIntervalCtrl),
+                itemField("Intervalo entre séries", seriesIntervalCtrl),
+                itemField("N° de séries", seriesCountCtrl),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

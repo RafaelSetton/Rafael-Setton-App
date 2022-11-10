@@ -18,26 +18,22 @@ class _RunState extends State<Run> {
   late Timer speakControlTimer;
   List spoken = [];
   bool announced = false;
-  int ready = 0;
+  bool ready = false;
 
-  List<WorkoutModel> sequence = [];
+  WorkoutModel sequence = WorkoutModel(workouts: []);
   CountDownController timeController = CountDownController();
 
-  @override
-  void initState() {
-    super.initState();
-    Timer(Duration(milliseconds: 1), () async {
-      await _loadRAM();
-      String thisName = sequence.first.title;
-      int thisTime = sequence.first.duration;
-      textToSpeech.speak(
-          "Vamos começar. Primeiro exercício: $thisName, $thisTime segundos");
-      textToSpeech.setCompletionHandler(() {
-        setState(() {
-          ready++;
-        });
-        textToSpeech.setCompletionHandler(() {});
+  void initialize() {
+    sequence = ModalRoute.of(context)!.settings.arguments as WorkoutModel;
+    String thisName = sequence.workouts.first.title;
+    int thisTime = sequence.workouts.first.duration;
+    textToSpeech.speak(
+        "Vamos começar. Primeiro exercício: $thisName, $thisTime segundos");
+    textToSpeech.setCompletionHandler(() {
+      setState(() {
+        ready = true;
       });
+      textToSpeech.setCompletionHandler(() {});
     });
   }
 
@@ -47,21 +43,12 @@ class _RunState extends State<Run> {
     super.dispose();
   }
 
-  // Handle DB connections
-
-  Future _loadRAM() async {
-    sequence = await readWorkout('runningWorkout');
-    setState(() {
-      ready++;
-    });
-  }
-
   // Speakers
 
   void announceNext() {
     try {
-      String nextName = sequence[1].title;
-      int nextTime = sequence[1].duration;
+      String nextName = sequence.workouts[1].title;
+      int nextTime = sequence.workouts[1].duration;
       textToSpeech.speak("Próximo exercício: $nextName, $nextTime segundos");
     } on RangeError {
       textToSpeech.speak("Finalizando treino");
@@ -94,7 +81,7 @@ class _RunState extends State<Run> {
 
   Widget circleTimer() {
     return CircularCountDownTimer(
-      duration: sequence.first.duration,
+      duration: sequence.workouts.first.duration,
       controller: timeController,
       width: MediaQuery.of(context).size.width / 2,
       height: MediaQuery.of(context).size.height / 2,
@@ -111,7 +98,7 @@ class _RunState extends State<Run> {
       isTimerTextShown: true,
       autoStart: true,
       onStart: () {
-        textToSpeech.speak(sequence.first.title);
+        textToSpeech.speak(sequence.workouts.first.title);
 
         speakControlTimer =
             Timer.periodic(Duration(milliseconds: 200), periodicTimeHandler);
@@ -120,9 +107,9 @@ class _RunState extends State<Run> {
         setState(() {
           spoken = [];
           announced = false;
-          if (sequence.length > 1) {
-            sequence.removeAt(0);
-            timeController.restart(duration: sequence.first.duration);
+          if (sequence.workouts.length > 1) {
+            sequence.workouts.removeAt(0);
+            timeController.restart(duration: sequence.workouts.first.duration);
           } else {
             timeController.pause();
             () async {
@@ -191,7 +178,8 @@ class _RunState extends State<Run> {
 
   @override
   Widget build(BuildContext context) {
-    Widget body = ready == 2
+    if (!ready) initialize();
+    Widget body = ready
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -199,7 +187,9 @@ class _RunState extends State<Run> {
               Container(
                 padding: EdgeInsets.all(15),
                 child: Text(
-                  sequence.length > 0 ? sequence.first.title : "",
+                  sequence.workouts.length > 0
+                      ? sequence.workouts.first.title
+                      : "",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,

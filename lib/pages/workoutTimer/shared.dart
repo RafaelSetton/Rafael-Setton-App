@@ -26,11 +26,3 @@ class Section {
     return int.parse(time.text);
   }
 }
-
-Future<List<WorkoutModel>> readWorkout(String name) async {
-  String? read = await RAM.read(name);
-  if (read == null) return [];
-  List<Map<String, dynamic>> maps =
-      List<Map<String, dynamic>>.from(jsonDecode(read));
-  return maps.map((e) => WorkoutModel.fromMap(e)).toList();
-}

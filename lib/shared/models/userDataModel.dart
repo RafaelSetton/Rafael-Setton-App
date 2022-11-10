@@ -1,32 +1,27 @@
 import 'dart:convert';
 import 'package:collection/collection.dart';
-
 import 'package:sql_treino/shared/models/ToDoModel.dart';
 import 'package:sql_treino/shared/models/workoutSetModel.dart';
 
 class UserDataModel {
   int colorGamePts;
   List<ToDoModel> todos;
-  Map<String, WorkoutSetModel> workouts;
   List<String> chats;
 
   UserDataModel({
     required this.colorGamePts,
     required this.todos,
-    required this.workouts,
     required this.chats,
   });
 
   UserDataModel copyWith({
     int? colorGamePts,
     List<ToDoModel>? todos,
-    Map<String, WorkoutSetModel>? workouts,
     List<String>? chats,
   }) {
     return UserDataModel(
       colorGamePts: colorGamePts ?? this.colorGamePts,
       todos: todos ?? this.todos,
-      workouts: workouts ?? this.workouts,
       chats: chats ?? this.chats,
     );
   }
@@ -35,22 +30,15 @@ class UserDataModel {
     return {
       'colorGamePts': colorGamePts,
       'todos': todos.map((x) => x.toMap()).toList(),
-      'workouts':
-          workouts.map((key, value) => MapEntry(key, value.toMapList())),
       'chats': chats,
     };
   }
 
   factory UserDataModel.fromMap(Map<String, dynamic> map) {
     return UserDataModel(
-      colorGamePts: map['colorGamePts'],
+      colorGamePts: map['colorGamePts']?.toInt() ?? 0,
       todos:
           List<ToDoModel>.from(map['todos']?.map((x) => ToDoModel.fromMap(x))),
-      workouts: Map<String, List>.from(map['workouts']).map((key, value) =>
-          MapEntry(
-              key,
-              WorkoutSetModel.fromMapList(
-                  List<Map<String, dynamic>>.from(value)))),
       chats: List<String>.from(map['chats']),
     );
   }
@@ -62,7 +50,7 @@ class UserDataModel {
 
   @override
   String toString() =>
-      'UserDataModel(colorGamePts: $colorGamePts, todos: $todos, workouts: $workouts, chats: $chats)';
+      'UserDataModel(colorGamePts: $colorGamePts, todos: $todos, chats: $chats)';
 
   @override
   bool operator ==(Object other) {
@@ -72,7 +60,7 @@ class UserDataModel {
     return other is UserDataModel &&
         other.colorGamePts == colorGamePts &&
         collectionEquals(other.todos, todos) &&
-        collectionEquals(other.workouts, workouts) &&
+        collectionEquals(other.chats, chats) &&
         collectionEquals(other.chats, chats);
   }
 
@@ -80,6 +68,5 @@ class UserDataModel {
   int get hashCode =>
       colorGamePts.hashCode ^
       todos.hashCode ^
-      workouts.hashCode ^
-      chats.hashCode;
+      chats.hashCode
 }
