@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/firebase/workoutsDB.dart';
 import 'package:sql_treino/shared/functions/buildFuture.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 

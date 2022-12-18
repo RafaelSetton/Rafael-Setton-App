@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/cryptography.dart';
-import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/firebase/usersDB.dart';
 import 'package:sql_treino/shared/enums/registerErrors.dart';
 import 'package:sql_treino/shared/models/userDataModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
@@ -50,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
       email: _email.text.trim(),
       password: Cryptography.encrypt(_password.text),
       birthday: "${_birthday.day}/${_birthday.month}/${_birthday.year}",
-      data: UserDataModel(colorGamePts: 0, todos: [], chats: []),
+      data: UserDataModel(todos: [], chats: []),
     );
     RegisterErrors err = await UserDB.post(user, create: true);
     switch (err) {

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sql_treino/services/firebase/scoresDB.dart';
+import 'package:sql_treino/shared/models/ScoreModel.dart';
 import 'dart:async';
-
-import 'package:sql_treino/shared/models/userModel.dart';
-import 'package:sql_treino/services/storage.dart';
-import 'package:sql_treino/shared/globals.dart' as globals;
 
 class ColorGamePage extends StatefulWidget {
   @override
@@ -32,7 +30,7 @@ class _ColorGamePageState extends State<ColorGamePage> {
 
   String text = "Pressione Restart";
   Color color = Colors.grey;
-  int results = 0;
+  int results = 0, resultsWrong = 0;
   double barHeight = 0;
   late Timer timer;
   int hs = 0;
@@ -41,9 +39,11 @@ class _ColorGamePageState extends State<ColorGamePage> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 10), () async {
-      UserModel? user = await UserDB.show(globals.userEmail);
+      List<ScoreModel> scores = await ScoresDB.get("ColorGame");
       setState(() {
-        hs = user!.data.colorGamePts;
+        hs = scores.length > 0
+            ? scores.reduce((s1, s2) => s1.right > s2.right ? s1 : s2).right
+            : 0;
       });
     });
   }
@@ -67,6 +67,7 @@ class _ColorGamePageState extends State<ColorGamePage> {
       results++;
       barHeight += 20;
     } else {
+      resultsWrong++;
       barHeight -= barHeight > 20 ? 20 : barHeight;
     }
     newText();
@@ -93,12 +94,17 @@ class _ColorGamePageState extends State<ColorGamePage> {
           text = "Pressione Restart";
           color = Colors.grey;
         });
-        if (results > hs) {
-          UserModel user = (await UserDB.show(globals.userEmail))!;
-          user.data.colorGamePts = results;
-          hs = results;
-          await UserDB.post(user);
-        }
+        ScoresDB().set(
+            "ColorGame",
+            ScoreModel(
+              dateTime: DateTime.now(),
+              right: results,
+              wrong: resultsWrong,
+            ));
+        if (results > hs) hs = results;
+        try {
+          timer.cancel();
+        } catch (e) {}
       }
     }
 
@@ -138,6 +144,7 @@ class _ColorGamePageState extends State<ColorGamePage> {
           newText();
           setState(() {
             results = 0;
+            resultsWrong = 0;
           });
         },
       ),

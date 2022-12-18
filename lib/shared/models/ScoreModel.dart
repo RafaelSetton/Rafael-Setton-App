@@ -1,22 +1,22 @@
-class SSAScoreModel {
+class ScoreModel {
   DateTime dateTime;
   int right;
   int wrong;
-  String mode;
-  SSAScoreModel({
+  String? mode;
+  ScoreModel({
     required this.dateTime,
     required this.right,
     required this.wrong,
-    required this.mode,
+    this.mode,
   });
 
-  SSAScoreModel copyWith({
+  ScoreModel copyWith({
     DateTime? dateTime,
     int? right,
     int? wrong,
     String? mode,
   }) {
-    return SSAScoreModel(
+    return ScoreModel(
       dateTime: dateTime ?? this.dateTime,
       right: right ?? this.right,
       wrong: wrong ?? this.wrong,
@@ -34,25 +34,25 @@ class SSAScoreModel {
     };
   }
 
-  factory SSAScoreModel.fromMap(int key, Map<String, dynamic> values) {
-    return SSAScoreModel(
+  factory ScoreModel.fromMap(int key, Map<String, dynamic> values) {
+    return ScoreModel(
       dateTime: DateTime.fromMillisecondsSinceEpoch(key),
       right: values['right']?.toInt() ?? 0,
       wrong: values['wrong']?.toInt() ?? 0,
-      mode: values['mode'] ?? '',
+      mode: values['mode'],
     );
   }
 
   @override
   String toString() {
-    return 'Score(dateTime: $dateTime, right: $right, wrong: $wrong, mode: $mode)';
+    return 'ScoreModel(dateTime: $dateTime, right: $right, wrong: $wrong, mode: $mode)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is SSAScoreModel &&
+    return other is ScoreModel &&
         other.dateTime == dateTime &&
         other.right == right &&
         other.wrong == wrong &&

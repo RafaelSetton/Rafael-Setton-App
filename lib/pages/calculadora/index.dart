@@ -104,13 +104,14 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     });
   }
 
-  Container myContainer(String text,
-      {double width = 0.25,
-      Color bg = Colors.white70,
-      void Function()? callback}) {
-    if (callback == null) {
-      callback = () => click(text);
-    }
+  Container myContainer(
+    String text, {
+    double width = 0.25,
+    Color bg = Colors.white70,
+    void Function()? callback,
+  }) {
+    callback ??= () => click(text);
+
     return Container(
       width: MediaQuery.of(context).size.width * width,
       height: availableHeight / 9,

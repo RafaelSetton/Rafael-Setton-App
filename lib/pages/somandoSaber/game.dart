@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:sql_treino/shared/models/SSAScoreModel.dart';
-import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/shared/models/ScoreModel.dart';
+import 'package:sql_treino/services/firebase/scoresDB.dart';
 import 'package:function_tree/function_tree.dart';
 import 'package:sql_treino/shared/widgets/game_clock.dart';
 import 'package:sql_treino/shared/globals.dart' as globals;
@@ -209,12 +209,15 @@ class _GamePageState extends State<GamePage> {
               children: [
                 equation(),
                 GameClock(onTimerEnd: () async {
-                  await SSAScoresDB().set(SSAScoreModel(
-                    dateTime: DateTime.now(),
-                    mode: mode ?? "",
-                    right: right,
-                    wrong: wrong,
-                  ));
+                  await ScoresDB().set(
+                    "SSA",
+                    ScoreModel(
+                      dateTime: DateTime.now(),
+                      mode: mode ?? "",
+                      right: right,
+                      wrong: wrong,
+                    ),
+                  );
                   Navigator.of(context).pop();
                 }),
               ],

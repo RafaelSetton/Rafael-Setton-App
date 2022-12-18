@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sql_treino/services/RAM.dart';
+import 'package:sql_treino/services/localDB.dart';
 import 'package:sql_treino/services/themenotifier.dart';
 import 'package:sql_treino/shared/themes.dart' as Themes;
 import 'package:sql_treino/shared/globals.dart' as globals;

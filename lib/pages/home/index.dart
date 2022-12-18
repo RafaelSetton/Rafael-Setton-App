@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sql_treino/pages/home/games.dart';
 import 'package:sql_treino/pages/home/profile.dart';
 import 'package:sql_treino/pages/home/utilities.dart';
-import 'package:sql_treino/services/RAM.dart';
+import 'package:sql_treino/services/localDB.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

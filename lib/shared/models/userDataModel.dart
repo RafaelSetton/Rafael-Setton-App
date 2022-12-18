@@ -4,23 +4,18 @@ import 'package:collection/collection.dart';
 import 'package:sql_treino/shared/models/ToDoModel.dart';
 
 class UserDataModel {
-  int colorGamePts;
   List<ToDoModel> todos;
   List<String> chats;
-
   UserDataModel({
-    required this.colorGamePts,
     required this.todos,
     required this.chats,
   });
 
   UserDataModel copyWith({
-    int? colorGamePts,
     List<ToDoModel>? todos,
     List<String>? chats,
   }) {
     return UserDataModel(
-      colorGamePts: colorGamePts ?? this.colorGamePts,
       todos: todos ?? this.todos,
       chats: chats ?? this.chats,
     );
@@ -28,7 +23,6 @@ class UserDataModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'colorGamePts': colorGamePts,
       'todos': todos.map((x) => x.toMap()).toList(),
       'chats': chats,
     };
@@ -36,7 +30,6 @@ class UserDataModel {
 
   factory UserDataModel.fromMap(Map<String, dynamic> map) {
     return UserDataModel(
-      colorGamePts: map['colorGamePts']?.toInt() ?? 0,
       todos:
           List<ToDoModel>.from(map['todos']?.map((x) => ToDoModel.fromMap(x))),
       chats: List<String>.from(map['chats']),
@@ -49,20 +42,18 @@ class UserDataModel {
       UserDataModel.fromMap(json.decode(source));
 
   @override
-  String toString() =>
-      'UserDataModel(colorGamePts: $colorGamePts, todos: $todos, chats: $chats)';
+  String toString() => 'UserDataModel(todos: $todos, chats: $chats)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    final collectionEquals = const DeepCollectionEquality().equals;
+    final listEquals = const DeepCollectionEquality().equals;
 
     return other is UserDataModel &&
-        other.colorGamePts == colorGamePts &&
-        collectionEquals(other.todos, todos) &&
-        collectionEquals(other.chats, chats);
+        listEquals(other.todos, todos) &&
+        listEquals(other.chats, chats);
   }
 
   @override
-  int get hashCode => colorGamePts.hashCode ^ todos.hashCode ^ chats.hashCode;
+  int get hashCode => todos.hashCode ^ chats.hashCode;
 }

@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sql_treino/services/RAM.dart';
+import 'package:sql_treino/services/localDB.dart';
 
 late FirebaseApp firebaseApp;
 late String userEmail;

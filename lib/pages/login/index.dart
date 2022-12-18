@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/cryptography.dart';
-import 'package:sql_treino/services/storage.dart';
-import 'package:sql_treino/services/RAM.dart';
+import 'package:sql_treino/services/firebase/usersDB.dart';
+import 'package:sql_treino/services/localDB.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
 import 'package:sql_treino/shared/widgets/input.dart';

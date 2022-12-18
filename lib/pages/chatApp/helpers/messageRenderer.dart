@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/firebase/usersDB.dart';
 import 'package:sql_treino/shared/models/messageModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 

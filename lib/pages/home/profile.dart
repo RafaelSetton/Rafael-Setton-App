@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
-import 'package:sql_treino/services/RAM.dart';
+import 'package:sql_treino/services/localDB.dart';
 import 'package:sql_treino/services/themenotifier.dart';
 import 'package:sql_treino/shared/themes.dart' as Themes;
+import 'package:sql_treino/shared/globals.dart' as globals;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -60,6 +61,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       child: Column(
         children: [
+          Text(
+            "Você está logado como\n"
+            "'${globals.userEmail}'",
+            style: TextStyle(
+              fontSize: 20,
+              height: 2,
+            ),
+            textAlign: TextAlign.center,
+          ),
           darkModeSwitch(_themeChanger),
         ],
       ),

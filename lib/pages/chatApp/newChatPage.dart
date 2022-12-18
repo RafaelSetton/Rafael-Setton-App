@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/firebase/usersDB.dart';
+import 'package:sql_treino/services/firebase/chatAppDB.dart';
 import 'package:sql_treino/shared/models/chatModel.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:sql_treino/shared/widgets/progressDialog.dart';

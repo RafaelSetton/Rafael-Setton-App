@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sql_treino/pages/workoutTimer/savedPage.dart';
 import 'package:sql_treino/pages/workoutTimer/selectionDialog.dart';
 import 'package:sql_treino/pages/workoutTimer/shared.dart';
-import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/firebase/workoutsDB.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 import 'package:sql_treino/shared/globals.dart' as globals;
 

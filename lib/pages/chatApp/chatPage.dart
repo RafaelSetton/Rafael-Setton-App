@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sql_treino/pages/chatApp/helpers/messageRenderer.dart';
-import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/firebase/chatAppDB.dart';
+import 'package:sql_treino/services/firebase/usersDB.dart';
 import 'package:sql_treino/shared/functions/buildFuture.dart';
 import 'package:sql_treino/shared/models/chatModel.dart';
 import 'package:sql_treino/shared/models/messageModel.dart';

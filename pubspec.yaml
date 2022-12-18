@@ -54,6 +54,7 @@ flutter:
   assets:
     - lib/assets/
     - lib/assets/Somando_Saber/
+    - lib/assets/NavButton/
     - assets/
 
   uses-material-design: true

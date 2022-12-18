@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sql_treino/pages/chatApp/helpers/firebaseImageHandler.dart';
-import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/firebase/chatAppDB.dart';
 import 'package:sql_treino/shared/models/chatModel.dart';
 import 'package:sql_treino/shared/globals.dart' as globals;
 

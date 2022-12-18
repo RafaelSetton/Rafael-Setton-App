@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/shared/models/SSAScoreModel.dart';
+import 'package:sql_treino/shared/models/ScoreModel.dart';
 import 'package:intl/intl.dart';
-import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/services/firebase/scoresDB.dart';
 
 class HighScorePage extends StatefulWidget {
   const HighScorePage({Key? key}) : super(key: key);
@@ -11,11 +11,11 @@ class HighScorePage extends StatefulWidget {
 }
 
 class _HighScorePageState extends State<HighScorePage> {
-  List<SSAScoreModel> highScores = [];
+  List<ScoreModel> highScores = [];
 
   @override
   void initState() {
-    SSAScoresDB.get().then((value) => setState(() {
+    ScoresDB.get("SSA").then((value) => setState(() {
           highScores = value;
         }));
     super.initState();
@@ -41,7 +41,7 @@ class _HighScorePageState extends State<HighScorePage> {
   }
 
   Widget scoreTile(BuildContext context, int index) {
-    SSAScoreModel score = highScores[index];
+    ScoreModel score = highScores[index];
 
     return Container(
       decoration: const BoxDecoration(
@@ -73,7 +73,7 @@ class _HighScorePageState extends State<HighScorePage> {
             borderRadius: BorderRadius.circular(15),
           ),
           alignment: Alignment.center,
-          child: Text(score.mode, textAlign: TextAlign.center),
+          child: Text(score.mode!, textAlign: TextAlign.center),
         ),
         style: ListTileStyle.drawer,
       ),

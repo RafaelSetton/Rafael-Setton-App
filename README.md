@@ -114,6 +114,10 @@ Descrição dos Commits:<br/>
    - Converter `Widget Function()` para `Stateless Widget`
    - Criou [enum para erro ao registrar](lib\shared\enums\registerErrors.dart)
    - Reformulou abas da [Home](lib\pages\home)
+1. DB & Buttons Refactoring
+   - Reformatação dos NavButton
+   - Reorganização dos Bancos de Dados
+     - ScoresDB
 
 ## Páginas:<br/>
 
