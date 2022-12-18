@@ -1,7 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:sql_treino/pages/home/games.dart';
 import 'package:sql_treino/pages/home/profile.dart';
-import 'package:sql_treino/pages/home/selection.dart';
+import 'package:sql_treino/pages/home/utilities.dart';
 import 'package:sql_treino/services/RAM.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Widget _currentPage = SelectionPage();
+  Widget _currentPage = UtilitiesScreen();
 
   void logout() async {
     await RAM.write("user", null);
@@ -52,11 +53,13 @@ class _HomePageState extends State<HomePage> {
           buttonBackgroundColor: Colors.grey.shade400,
           onTap: (index) {
             setState(() {
-              _currentPage = [SelectionPage(), ProfilePage()][index];
+              _currentPage =
+                  [UtilitiesScreen(), GamesScreen(), ProfileScreen()][index];
             });
           },
           items: [
-            Icon(Icons.home, size: 30),
+            Icon(Icons.widgets, size: 30),
+            Icon(Icons.videogame_asset_outlined, size: 30),
             Icon(Icons.person, size: 30),
           ],
         ),

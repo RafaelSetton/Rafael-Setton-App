@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sql_treino/shared/widgets/commonInput.dart';
+import 'package:sql_treino/shared/widgets/input.dart';
 
 class IMCPage extends StatefulWidget {
   @override
@@ -70,13 +70,13 @@ class _IMCPageState extends State<IMCPage> {
                 size: 150,
                 color: Theme.of(context).colorScheme.inversePrimary,
               ),
-              input(
+              Input(
                 controller: weightController,
                 label: "Peso (kg)",
                 hint: "65",
                 keyboardType: TextInputType.number,
               ),
-              input(
+              Input(
                 controller: heightController,
                 label: "Altura (cm)",
                 hint: "170",

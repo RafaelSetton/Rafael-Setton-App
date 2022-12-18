@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-Widget loadingScreen(BuildContext context) => Center(
+class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
       child: Text(
         "Carregando Dados...",
         style: TextStyle(
@@ -10,3 +15,5 @@ Widget loadingScreen(BuildContext context) => Center(
         textAlign: TextAlign.center,
       ),
     );
+  }
+}

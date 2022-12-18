@@ -67,23 +67,23 @@ Descrição dos Commits:<br/>
    - Separar funções compartilhadas
 1. Update Workout Timer
    - Criação de Models:
-      - [WorkoutModel](lib\shared\models\workoutModel.dart)
-      - WorkoutSetModel
-      - [UserDataModel](lib\shared\models\userDataModel.dart)
-      - [ToDoModel](lib\shared\models\toDoModel.dart)
+     - [WorkoutModel](lib\shared\models\workoutModel.dart)
+     - WorkoutSetModel
+     - [UserDataModel](lib\shared\models\userDataModel.dart)
+     - [ToDoModel](lib\shared\models\toDoModel.dart)
    - SelectionDialog para iniciar Workout
    - Atualização README
 1. Update Workout Timer & Create ChatApp
    - Criação [ChatApp](lib\pages\chatApp)
-      - Flutter Type Ahead
-      - Image Picker
-      - [MessageModel](lib\shared\models\messageModel.dart)
-      - [ChatModel](lib\shared\models\chatModel.dart)
-      - [ChatAppDB](lib\services\storage.dart)
+     - Flutter Type Ahead
+     - Image Picker
+     - [MessageModel](lib\shared\models\messageModel.dart)
+     - [ChatModel](lib\shared\models\chatModel.dart)
+     - [ChatAppDB](lib\services\storage.dart)
    - Criação de Widgets compartilhados
-      - [ProgressDialog](lib\shared\widgets\progressDialog.dart)
-      - [LoadingScreen](lib\shared\widgets\loadingScreen.dart)
-      - [ErrorScreen](lib\shared\widgets\errorScreen.dart)
+     - [ProgressDialog](lib\shared\widgets\progressDialog.dart)
+     - [LoadingScreen](lib\shared\widgets\loadingScreen.dart)
+     - [ErrorScreen](lib\shared\widgets\errorScreen.dart)
    - ArgumentsModel
    - Função getArguments
    - Mover função calcular para página Calculadora
@@ -92,12 +92,12 @@ Descrição dos Commits:<br/>
    - Consertou erro no High Score
 1. Bug-Fix e Refatorar
    - Plugins
-      - Curved Navigation Bar
-      - Flutter Switch
+     - Curved Navigation Bar
+     - Flutter Switch
    - Implementação do tema
-      - [Theme Notifier](lib\services\themenotifier.dart)
-      - Claro e Escuro
-      - MaterialAppWithTheme
+     - [Theme Notifier](lib\services\themenotifier.dart)
+     - Claro e Escuro
+     - MaterialAppWithTheme
    - Widget Input
 1. Fix Bugs & DB Update
    - Deletou WorkoutSetModel
@@ -110,6 +110,10 @@ Descrição dos Commits:<br/>
    - Incorporação [Somando Saber App](lib\pages\somandoSaber)
 1. Update README.md
    - Listar e descrever commits
+1. Small Refactor
+   - Converter `Widget Function()` para `Stateless Widget`
+   - Criou [enum para erro ao registrar](lib\shared\enums\registerErrors.dart)
+   - Reformulou abas da [Home](lib\pages\home)
 
 ## Páginas:<br/>
 

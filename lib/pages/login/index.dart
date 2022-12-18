@@ -5,7 +5,7 @@ import 'package:sql_treino/services/storage.dart';
 import 'package:sql_treino/services/RAM.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
-import 'package:sql_treino/shared/widgets/commonInput.dart';
+import 'package:sql_treino/shared/widgets/input.dart';
 import 'package:sql_treino/shared/globals.dart' as globals;
 
 class LoginPage extends StatefulWidget {
@@ -104,11 +104,11 @@ class _LoginPageState extends State<LoginPage> {
             key: _formKey,
             child: Column(
               children: <Widget>[
-                input(
+                Input(
                     controller: _email,
                     label: "E-mail",
                     hint: "seunome@exemplo.com"),
-                input(
+                Input(
                     controller: _password,
                     label: "Senha",
                     hint: "********",

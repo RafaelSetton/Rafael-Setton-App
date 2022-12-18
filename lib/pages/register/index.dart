@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/cryptography.dart';
 import 'package:sql_treino/services/storage.dart';
+import 'package:sql_treino/shared/enums/registerErrors.dart';
 import 'package:sql_treino/shared/models/userDataModel.dart';
 import 'package:sql_treino/shared/models/userModel.dart';
 import 'package:sql_treino/shared/widgets/alertWidget.dart';
-import 'package:sql_treino/shared/widgets/commonInput.dart';
+import 'package:sql_treino/shared/widgets/input.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -51,9 +52,9 @@ class _RegisterPageState extends State<RegisterPage> {
       birthday: "${_birthday.day}/${_birthday.month}/${_birthday.year}",
       data: UserDataModel(colorGamePts: 0, todos: [], chats: []),
     );
-    String err = await UserDB.post(user, create: true);
+    RegisterErrors err = await UserDB.post(user, create: true);
     switch (err) {
-      case "senha":
+      case RegisterErrors.invalidCharacter:
         alert(
             context,
             "Senha inválida",
@@ -63,7 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _password.text = "";
         _confirm.text = "";
         break;
-      case "e-mail":
+      case RegisterErrors.emailExists:
         alert(context, "E-mail inválido",
             "O e-mail que você digitou já está cadastrado.");
         _email.text = "";
@@ -117,20 +118,20 @@ class _RegisterPageState extends State<RegisterPage> {
             key: _formkey,
             child: Column(
               children: <Widget>[
-                input(
+                Input(
                     controller: _name,
                     label: "Nome Completo",
                     hint: "João da Silva Oliveira"),
-                input(
+                Input(
                     controller: _email,
                     label: "E-mail",
                     hint: "seu_nome@exemplo.com"),
-                input(
+                Input(
                     controller: _password,
                     label: "Senha",
                     hint: "",
                     hide: true),
-                input(
+                Input(
                     controller: _confirm,
                     label: "Confirmar Senha",
                     hint: "",

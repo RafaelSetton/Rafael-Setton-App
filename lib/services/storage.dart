@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sql_treino/shared/enums/registerErrors.dart';
 import 'package:sql_treino/shared/models/chatModel.dart';
 import 'package:sql_treino/shared/models/messageModel.dart';
 import 'package:sql_treino/shared/models/SSAScoreModel.dart';
@@ -13,17 +14,19 @@ class DB {
 }
 
 class UserDB extends DB {
-  static Future post(UserModel user, {bool create = false}) async {
+  static Future<RegisterErrors> post(UserModel user,
+      {bool create = false}) async {
     if (user.password.contains(RegExp(r"[^a-zA-Z0-9 .()!@#$%&]"))) {
-      return "senha";
+      return RegisterErrors.invalidCharacter;
     } else if (create) {
       final check = await show(user.email);
       if (check != null) {
-        return "e-mail";
+        return RegisterErrors.emailExists;
       }
     }
 
     await DB.collection.doc(user.email).set(user.toMap());
+    return RegisterErrors.none;
   }
 
   static Future<List<String>> list() async {

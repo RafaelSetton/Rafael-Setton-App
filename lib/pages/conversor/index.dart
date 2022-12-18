@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:sql_treino/shared/functions/buildFuture.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'package:sql_treino/shared/widgets/commonInput.dart';
+import 'package:sql_treino/shared/widgets/input.dart';
 
 class ConversorPage extends StatefulWidget {
   @override
@@ -83,7 +83,7 @@ class _ConversorPageState extends State<ConversorPage> {
 
   Widget buildTextField(String label, String prefix,
       TextEditingController controller, void Function(String) onChange) {
-    return input(
+    return Input(
       controller: controller,
       label: label,
       hint: "0,00",

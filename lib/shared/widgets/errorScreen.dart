@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-Widget errorScreen(BuildContext context) => Center(
+class ErrorScreen extends StatelessWidget {
+  const ErrorScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
       child: Text(
         "Erro ao Carregar Dados :(",
         style: TextStyle(
@@ -10,3 +15,5 @@ Widget errorScreen(BuildContext context) => Center(
         textAlign: TextAlign.center,
       ),
     );
+  }
+}
