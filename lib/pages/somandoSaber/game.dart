@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,28 @@ class _GamePageState extends State<GamePage> {
   List<String> operations = [];
   Random generator = Random(DateTime.now().millisecondsSinceEpoch);
   int right = 0, wrong = 0;
+  late GameClockCountDownController countDownController;
+
+  @override
+  void initState() {
+    super.initState();
+    countDownController =
+        GameClockCountDownController(60, onChange: () => setState(() {}));
+    Timer(Duration(microseconds: 10), countDownController.resume);
+
+    mode = globals.arguments as String;
+    if (mode!.contains("Adição")) operations.add("+");
+    if (mode!.contains("Subtração")) operations.add("-");
+    if (mode!.contains("Multiplicação")) operations.add("*");
+    if (mode!.contains("Divisão")) operations.add("/");
+    newEquation();
+  }
+
+  @override
+  void dispose() {
+    countDownController.dispose();
+    super.dispose();
+  }
 
   void newEquation() {
     String op = operations[generator.nextInt(operations.length)];
@@ -51,6 +74,21 @@ class _GamePageState extends State<GamePage> {
       _equation = n1.toString() + op + n2.toString();
     });
   }
+
+  Future saveScore() async {
+    await ScoresDB().set(
+      "SSA",
+      ScoreModel(
+        dateTime: DateTime.now(),
+        mode: mode ?? "",
+        right: right,
+        wrong: wrong,
+      ),
+    );
+    Navigator.of(context).pop();
+  }
+
+  // Buttons
 
   Widget keyButton(
       {void Function()? onPressed,
@@ -121,6 +159,8 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
+  // Widgets
+
   Widget equation() {
     return Container(
       margin: const EdgeInsets.all(10),
@@ -185,14 +225,6 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (mode == null) {
-      mode = globals.arguments as String;
-      if (mode!.contains("Adicao")) operations.add("+");
-      if (mode!.contains("Subtracao")) operations.add("-");
-      if (mode!.contains("Multiplicacao")) operations.add("*");
-      if (mode!.contains("Divisao")) operations.add("/");
-      newEquation();
-    }
     return Scaffold(
       appBar: AppBar(
         title: Text(mode ?? "Jogar"),
@@ -209,20 +241,8 @@ class _GamePageState extends State<GamePage> {
               children: [
                 equation(),
                 GameClock(
-                  onTimerEnd: () async {
-                    await ScoresDB().set(
-                      "SSA",
-                      ScoreModel(
-                        dateTime: DateTime.now(),
-                        mode: mode ?? "",
-                        right: right,
-                        wrong: wrong,
-                      ),
-                    );
-                    Navigator.of(context).pop();
-                  },
-                  countDownController: GameClockCountDownController(60,
-                      onChange: () => setState(() {})),
+                  onTimerEnd: saveScore,
+                  countDownController: countDownController,
                 ),
               ],
             ),

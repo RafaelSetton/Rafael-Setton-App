@@ -123,6 +123,9 @@ Descrição dos Commits:<br/>
    - Atualização dos plugins
    - ColorGame usando [GameClock](lib\shared\widgets\game_clock.dart)
    - `debugPrint` para ações do DB
+1. Update SSA
+   - Consertar Clock Somando Saber App
+   - InputChip para seleção do modo de jogo
 
 ## Páginas:<br/>
 
