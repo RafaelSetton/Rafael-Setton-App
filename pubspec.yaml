@@ -18,9 +18,9 @@ dependencies:
   flutter_switch: ^0.3.2
 
   # Firebase
-  firebase_core: ^1.4.0
-  cloud_firestore: ^2.4.0
-  firebase_storage: ^10.0.1
+  firebase_core: ^2.4.0
+  cloud_firestore: ^4.2.0
+  firebase_storage: ^11.0.8
   image_picker: ^0.8.2
 
   # Local Storage
@@ -43,7 +43,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.9.0
+  flutter_launcher_icons: ^0.11.0
 
 flutter_icons:
   android: "launcher_icon"

@@ -32,7 +32,7 @@ Descrição dos Commits:<br/>
    - Layout Conversor de Moedas
    - Recarregar na página de Login
    - Alteração na forma de armazenamento
-   - Removed `main()` from files
+   - Removeu `main()` dos arquivos
 1. Problemas Com Build
    - Mudanças nas configurações
 1. Refactor Encryption
@@ -118,6 +118,11 @@ Descrição dos Commits:<br/>
    - Reformatação dos NavButton
    - Reorganização dos Bancos de Dados
      - ScoresDB
+1. Update GameClock for ColorGame
+   - Função `setup` para preparar o app
+   - Atualização dos plugins
+   - ColorGame usando [GameClock](lib\shared\widgets\game_clock.dart)
+   - `debugPrint` para ações do DB
 
 ## Páginas:<br/>
 

@@ -56,7 +56,7 @@ class _RunState extends State<Run> {
   }
 
   void periodicTimeHandler(Timer timer) {
-    int timeLeft = int.parse(timeController.getTime());
+    int timeLeft = int.parse(timeController.getTime() ?? "0");
     switch (timeLeft) {
       case 1:
       case 2:

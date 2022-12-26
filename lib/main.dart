@@ -5,18 +5,23 @@ import 'package:sql_treino/routes.dart';
 import 'package:sql_treino/services/themenotifier.dart';
 import 'package:sql_treino/shared/themes.dart' as Themes;
 
-void main() {
+Future setup() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-  ]).then((value) async {
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.white));
-  }).then(
-    (value) => runApp(ChangeNotifierProvider<ThemeChanger>(
-      create: (_) => ThemeChanger(Themes.light),
-      child: MaterialAppWithTheme(),
-    )),
+  ]);
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.white));
+}
+
+void main() {
+  setup().then(
+    (value) => runApp(
+      ChangeNotifierProvider<ThemeChanger>(
+        create: (_) => ThemeChanger(Themes.light),
+        child: MaterialAppWithTheme(),
+      ),
+    ),
   );
 }
 

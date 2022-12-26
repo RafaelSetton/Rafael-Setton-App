@@ -208,18 +208,22 @@ class _GamePageState extends State<GamePage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 equation(),
-                GameClock(onTimerEnd: () async {
-                  await ScoresDB().set(
-                    "SSA",
-                    ScoreModel(
-                      dateTime: DateTime.now(),
-                      mode: mode ?? "",
-                      right: right,
-                      wrong: wrong,
-                    ),
-                  );
-                  Navigator.of(context).pop();
-                }),
+                GameClock(
+                  onTimerEnd: () async {
+                    await ScoresDB().set(
+                      "SSA",
+                      ScoreModel(
+                        dateTime: DateTime.now(),
+                        mode: mode ?? "",
+                        right: right,
+                        wrong: wrong,
+                      ),
+                    );
+                    Navigator.of(context).pop();
+                  },
+                  countDownController: GameClockCountDownController(60,
+                      onChange: () => setState(() {})),
+                ),
               ],
             ),
             answer(),

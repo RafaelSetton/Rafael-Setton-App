@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sql_treino/services/firebase/scoresDB.dart';
 import 'package:sql_treino/shared/models/ScoreModel.dart';
+import 'package:sql_treino/shared/widgets/game_clock.dart';
 import 'dart:async';
 
 class ColorGamePage extends StatefulWidget {
@@ -31,19 +32,23 @@ class _ColorGamePageState extends State<ColorGamePage> {
   String text = "Pressione Restart";
   Color color = Colors.grey;
   int results = 0, resultsWrong = 0;
-  double barHeight = 0;
-  late Timer timer;
+  late GameClockCountDownController countDownController;
   int hs = 0;
+  bool disabled = true;
 
   @override
   void initState() {
     super.initState();
+
+    countDownController =
+        GameClockCountDownController(60, onChange: () => setState(() {}));
+
     Future.delayed(Duration(milliseconds: 10), () async {
       List<ScoreModel> scores = await ScoresDB.get("ColorGame");
       setState(() {
-        hs = scores.length > 0
-            ? scores.reduce((s1, s2) => s1.right > s2.right ? s1 : s2).right
-            : 0;
+        hs = scores.isEmpty
+            ? 0
+            : scores.reduce((s1, s2) => s1.right > s2.right ? s1 : s2).right;
       });
     });
   }
@@ -63,64 +68,25 @@ class _ColorGamePageState extends State<ColorGamePage> {
   }
 
   void click(Color color) {
+    if (disabled) return;
     if (colorValues.indexOf(color) == colorStrings.indexOf(text)) {
       results++;
-      barHeight += 20;
+      countDownController.countUp(answerValue);
     } else {
       resultsWrong++;
-      barHeight -= barHeight > 20 ? 20 : barHeight;
+      countDownController.countDown(answerValue);
     }
     newText();
   }
 
-  void startTimer(double height) {
-    setState(() {
-      barHeight = height;
-    });
-    try {
-      timer.cancel();
-    } catch (err) {}
-
-    void periodic(time) async {
-      if (barHeight >= 1) {
-        setState(() {
-          barHeight -= 1;
-          int milli = results < 150 ? (30 - results / 10).round() : 15;
-          timer.cancel();
-          timer = Timer.periodic(Duration(milliseconds: milli), periodic);
-        });
-      } else {
-        setState(() {
-          text = "Pressione Restart";
-          color = Colors.grey;
-        });
-        ScoresDB().set(
-            "ColorGame",
-            ScoreModel(
-              dateTime: DateTime.now(),
-              right: results,
-              wrong: resultsWrong,
-            ));
-        if (results > hs) hs = results;
-        try {
-          timer.cancel();
-        } catch (e) {}
-      }
-    }
-
-    timer = Timer.periodic(Duration(milliseconds: 30), periodic);
-  }
-
   Container colorButton(Color color) {
     return Container(
-        width: MediaQuery.of(context).size.width / 3 - 10,
+        width: MediaQuery.of(context).size.width / 3,
         height: 100,
         padding: EdgeInsets.all(5),
         color: Colors.black,
         child: ElevatedButton(
-          onPressed: () {
-            if (barHeight > 0) click(color);
-          },
+          onPressed: () => click(color),
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(color),
           ),
@@ -140,7 +106,9 @@ class _ColorGamePageState extends State<ColorGamePage> {
         ),
         iconSize: 50,
         onPressed: () {
-          startTimer(MediaQuery.of(context).size.height);
+          disabled = false;
+          countDownController.reset();
+          countDownController.resume();
           newText();
           setState(() {
             results = 0;
@@ -151,6 +119,28 @@ class _ColorGamePageState extends State<ColorGamePage> {
     );
   }
 
+  void reset() {
+    Timer.run(() {
+      // Evitar "setState called during build"
+      setState(() {
+        text = "Pressione Restart";
+        color = Colors.grey;
+      });
+    });
+    disabled = true;
+
+    if (countDownController.currentTime == 0) {
+      ScoresDB().set(
+          "ColorGame",
+          ScoreModel(
+            dateTime: DateTime.now(),
+            right: results,
+            wrong: resultsWrong,
+          ));
+      if (results > hs) hs = results;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,32 +149,26 @@ class _ColorGamePageState extends State<ColorGamePage> {
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            try {
-              timer.cancel();
-            } catch (err) {}
-            Navigator.pop(context);
-          },
+          onPressed: Navigator.of(context).pop,
         ),
       ),
       body: Container(
         color: Colors.black,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            AnimatedContainer(
-              duration: Duration(milliseconds: 5),
-              alignment: Alignment.bottomCenter,
-              height: barHeight,
-              width: 30,
-              color: Colors.grey,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
+            Row(
+              children: [
+                SizedBox(width: 15),
+                GameClock(
+                  onTimerEnd: reset,
+                  countDownController: countDownController,
+                  backgroundColor: Colors.grey.shade800,
+                  startColor: Colors.white,
+                  endColor: Colors.white,
+                ),
                 Container(
-                  width: MediaQuery.of(context).size.width - 30,
+                  width: MediaQuery.of(context).size.width - clockSize - 25,
                   height: MediaQuery.of(context).size.height / 3,
                   padding: EdgeInsets.all(10.0),
                   alignment: Alignment.center,
@@ -198,47 +182,47 @@ class _ColorGamePageState extends State<ColorGamePage> {
                         fontStyle: FontStyle.normal),
                   ),
                 ),
-                Column(
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "High Score: $hs",
+                    style: TextStyle(color: Colors.grey, fontSize: 35),
+                  ),
+                  padding: EdgeInsets.only(bottom: 10),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Container(
                       alignment: Alignment.center,
                       child: Text(
-                        "High Score: $hs",
+                        results.toString() + ' pts',
                         style: TextStyle(color: Colors.grey, fontSize: 35),
                       ),
-                      padding: EdgeInsets.only(bottom: 10),
+                      width: MediaQuery.of(context).size.width / 3 - 10,
+                      color: Colors.black,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            results.toString() + ' pts',
-                            style: TextStyle(color: Colors.grey, fontSize: 35),
-                          ),
-                          width: MediaQuery.of(context).size.width / 3 - 10,
-                          color: Colors.black,
-                        ),
-                        colorButton(Colors.red),
-                        colorButton(Colors.orange),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        colorButton(Colors.purple),
-                        colorButton(Colors.white),
-                        colorButton(Colors.yellow),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        colorButton(Colors.blue),
-                        colorButton(Colors.green),
-                        resetButton(),
-                      ],
-                    ),
+                    colorButton(Colors.red),
+                    colorButton(Colors.orange),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    colorButton(Colors.purple),
+                    colorButton(Colors.white),
+                    colorButton(Colors.yellow),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    colorButton(Colors.blue),
+                    colorButton(Colors.green),
+                    resetButton(),
                   ],
                 ),
               ],

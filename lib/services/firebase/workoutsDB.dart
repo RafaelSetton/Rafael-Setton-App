@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:sql_treino/shared/models/workoutModel.dart';
 
 class WorkoutDB {
@@ -12,6 +13,7 @@ class WorkoutDB {
       .collection("workouts");
 
   static Future post(String name, WorkoutModel data) async {
+    debugPrint("WorkoutDB: Posting workout $name $data");
     final postData = Map.fromIterables(
         List<String>.generate(data.workouts.length, (i) => i.toString()),
         data.workouts.map((e) => e.toMap()));
@@ -19,11 +21,13 @@ class WorkoutDB {
   }
 
   static Future<List<String>> list() async {
+    debugPrint("WorkoutDB: Listing Workouts");
     QuerySnapshot snapshot = await collection.get();
     return snapshot.docs.map((doc) => doc.id).toList();
   }
 
   static Future<WorkoutModel> show(String name) async {
+    debugPrint("WorkoutDB: Showing workout $name");
     final LinkedHashMap data =
         (await collection.doc(name).get()).data() as LinkedHashMap;
     final workouts = data.values.map((e) => ExerciseModel.fromMap(e)).toList();
@@ -31,6 +35,7 @@ class WorkoutDB {
   }
 
   static Future delete(String name) async {
+    debugPrint("WorkoutDB: Deleting workout $name");
     return await collection.doc(name).delete();
   }
 }
